@@ -1,7 +1,6 @@
 import {
 	PredicateMap,
 	StreamParser,
-	Token,
 	TokenSource,
 	TypeMap,
 	limit,
@@ -9,8 +8,9 @@ import {
 	read,
 	skip
 } from "@hgargg-0710/parsers.js"
-import { Quote, SelectorSymbol } from "../../char/tokens.mjs"
-import { AttributeName, SelectorIdentifier, SelectorString } from "./tokens.mjs"
+import { SelectorSymbol } from "../../char/tokens.mjs"
+import { AttributeName, SelectorIdentifier, isMatch } from "./tokens.mjs"
+import { SelectorString } from "../../string/tokens.mjs"
 
 export const attributeMap = TypeMap(PredicateMap)(
 	new Map([
@@ -24,41 +24,26 @@ export const attributeMap = TypeMap(PredicateMap)(
 
 				let comparison
 				skip(input)(
-					(input) =>
-						![
-							EndsWithMatch,
-							IncludesMatch,
-							HyphenBeginMatch,
-							PrefixMatch,
-							FindMatch,
-							EqMatch
-						].some((x) => x.is(input.curr()) && (comparison = input.next()))
+					(input) => !isMatch(input.curr()) && (comparison = input.next())
 				)
 
-				let quote = ""
+				let isString = false
 				skip(input)(
 					(input) =>
 						!SelectorSymbol.is(input.curr()) &&
-						(!Quote.is(input.curr()) ||
-							((quote = Token.value(input.next())) && false))
+						!(isString = SelectorString.is(input.curr()))
 				)
 
-				const isQuote = ['"', "'"].includes(quote)
-
-				const value = read(
-					() => true,
-					TokenSource((isQuote ? SelectorString : SelectorIdentifier)(""))
-				)(
-					InputStream(
-						limit(
-							isQuote
-								? (input) =>
-										!Quote.is(input.curr()) ||
-										Token.value(input.curr()) !== quote
-								: (input) => SelectorSymbol.is(input.curr())
-						)(input)
-					)
-				)
+				const value = isString
+					? input.curr()
+					: read(
+							() => true,
+							TokenSource(SelectorIdentifier(""))
+					  )(
+							InputStream(
+								limit((input) => SelectorSymbol.is(input.curr()))(input)
+							)
+					  )
 
 				return [
 					{

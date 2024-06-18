@@ -1,9 +1,8 @@
 1. Documentation [finish the API]; 
-2. Testing; 
+2. Testing (parser, generator);
 3. Finish: 
 
-	3.1. The parser; 
-	3.2. The generator; 
+	3.1. The generator; 
 
 4. In future: 
 
