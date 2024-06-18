@@ -1,0 +1,11 @@
+1. Documentation [finish the API]; 
+2. Testing; 
+3. Finish: 
+
+	3.1. The parser; 
+	3.2. The generator; 
+
+4. In future: 
+
+	4.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
+	4.2. Create validation API; 
