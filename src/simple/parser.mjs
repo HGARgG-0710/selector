@@ -4,9 +4,9 @@ import {
 	TokenSource,
 	read,
 	preserve,
-	skip,
 	StreamParser,
-	limit
+	limit,
+	InputStream
 } from "@hgargg-0710/parsers.js"
 
 import {
@@ -22,15 +22,11 @@ import {
 import {
 	SelectorHash,
 	SelectorDot,
-	Space,
 	DoubleColon,
 	Colon,
 	Any,
-	Namespace,
-	Sibling,
 	SelectorSymbol,
-	Child,
-	Plus,
+	RectOp,
 	RectCl
 } from "../char/tokens.mjs"
 
@@ -45,13 +41,14 @@ const readSymbol = [
 	[PseudoElementSelector],
 	[PseudoClassSelector],
 	[SelectorElement, false]
-].map(([SelectorType, skipFirst]) => (input) => {
+].map(([SelectorType, skipFirst]) => (input, parser) => {
 	if (skipFirst !== false) input.next()
 	return [
 		read(
 			(input) => SelectorSymbol.is(input.curr()),
 			TokenSource(SelectorType(""))
-		)(input).value
+		)(input).value,
+		...parser(input)
 	]
 })
 
@@ -64,24 +61,22 @@ const attributeHandler = trivialCompose(
 
 // ! FIX THE EXPORTS (API, names...)
 export const selectorMap = TypeMap(PredicateMap)(
-	new Map(
+	new Map([
+		[SelectorHash, readSymbol[0]],
+		[SelectorDot, readSymbol[1]],
 		[
-			[SelectorHash, readSymbol[0]],
-			[SelectorDot, readSymbol[1]],
-			[
-				RectOp,
-				function (input) {
-					input.next() // [
-					return [attributeHandler(input)]
-				}
-			],
-			[DoubleColon, readSymbol[2]],
-			[Colon, readSymbol[3]],
-			[Any, (input) => [UniversalSelector(input.curr())]],
-			[SelectorSymbol, readSymbol[4]]
+			RectOp,
+			function (input) {
+				input.next() // [
+				return attributeHandler(input)
+			}
 		],
-		preserve
-	)
+		[DoubleColon, readSymbol[2]],
+		[Colon, readSymbol[3]],
+		[Any, (input) => [UniversalSelector(input.curr())]],
+		[SelectorSymbol, readSymbol[4]]
+	]),
+	preserve
 )
 
 export const SimpleSelectorParser = StreamParser(selectorMap)

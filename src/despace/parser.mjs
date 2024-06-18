@@ -5,7 +5,7 @@ import { Space } from "../char/tokens.mjs"
 
 export const singleSpaceMap = PredicateMap(
 	new Map([
-		[Space, miss],
+		[Space.is, miss],
 		[
 			CompoundSelector.is,
 			function (input) {
@@ -15,10 +15,10 @@ export const singleSpaceMap = PredicateMap(
 					skip(input)((input) => Space.is(input.curr()))
 					return [compound].concat([
 						...(CompoundSelector.is(input.curr()) ? [space] : []),
-						input.curr()
+						...(input.curr() ? [input.curr()] : [])
 					])
 				}
-				return [compound, input.curr()]
+				return [compound].concat(input.curr() ? [input.curr()] : [])
 			}
 		],
 		[Combinator, preserve]

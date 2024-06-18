@@ -22,7 +22,7 @@ export const selectorStringMap = TypeMap(PredicateMap)(
 							!Quote.is(input.curr()) ||
 							Token.value(input.curr()) !== quote,
 						TokenSource(SelectorString(""))
-					)
+					)(input).value
 				]
 			}
 		]
