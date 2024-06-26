@@ -1,6 +1,7 @@
 import { TokenType } from "@hgargg-0710/parsers.js"
 import { function as _f } from "@hgargg-0710/one"
 import {
+	ParentSelector,
 	PseudoClassSelector,
 	PseudoElementSelector,
 	SelectorAttribute,
@@ -21,6 +22,7 @@ export const Selector = or(
 		SelectorAttribute,
 		PseudoClassSelector,
 		PseudoElementSelector,
-		UniversalSelector
+		UniversalSelector,
+		ParentSelector
 	].map((x) => x.is)
 )

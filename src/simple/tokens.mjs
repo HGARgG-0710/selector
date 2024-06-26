@@ -7,7 +7,8 @@ export const [
 	SelectorAttribute,
 	PseudoClassSelector,
 	PseudoElementSelector,
-	UniversalSelector
+	UniversalSelector, 
+	ParentSelector
 ] = [
 	"element",
 	"id",
@@ -15,5 +16,6 @@ export const [
 	"attribute",
 	"pseudo-class",
 	"pseudo-element",
-	"universal"
+	"universal", 
+	"parent"
 ].map(TokenType)

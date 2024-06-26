@@ -13,7 +13,8 @@ const simpleTests = [
 	"::before:focused",
 	"*.ffda90",
 	".KARKAR[x='Siegbrau!\"rolololo']",	
-	".rhubab[Tower~=\"Feel no beginning and I feel no ee-e-e-ee-nd!\"]"
+	".rhubab[Tower~=\"Feel no beginning and I feel no ee-e-e-ee-nd!\"]", 
+	"&.arcticground:held"
 ]
 
 writeFile("simple.json", JSON.stringify(simpleTests.map(parse)))

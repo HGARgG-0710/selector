@@ -22,7 +22,9 @@ import {
 	Sibling,
 	Quote,
 	SelectorSymbol,
-	Comma
+	Comma,
+	Ampersand,
+	Escape
 } from "./tokens.mjs"
 
 const { anything, space, global } = regex
@@ -30,9 +32,10 @@ const { anything, space, global } = regex
 export const selectorCharMap = RegExpMap(
 	new Map(
 		[
+			[space(), Space],
+			[/\\/, Escape],
 			[/#/, SelectorHash],
 			[/\./, SelectorDot],
-			[space(), Space],
 			[/\[/, RectOp],
 			[/\]/, RectCl],
 			[/::/, DoubleColon],
@@ -52,6 +55,7 @@ export const selectorCharMap = RegExpMap(
 			[/~/, Sibling],
 			[/"|'/, Quote],
 			[/,/, Comma],
+			[/&/, Ampersand],
 			[anything(), SelectorSymbol]
 		].map(([regexp, token]) => [global(regexp), token])
 	)

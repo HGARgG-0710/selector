@@ -22,25 +22,18 @@ export const attributeMap = TypeMap(PredicateMap)(
 					TokenSource(AttributeName(""))
 				)(input).value.value
 
-				console.log()
-				console.log(input.curr())
-				console.log(name)
-
 				let comparison
-				skip(input)(
+				skip(
 					(input) =>
 						!isMatch(input.curr()) || ((comparison = input.next()) && false)
-				)
-				console.log()
-				console.log(input.curr())
-				console.log(comparison)
+				)(input)
 
 				let isString = false
-				skip(input)(
+				skip(
 					(input) =>
 						!SelectorSymbol.is(input.curr()) &&
 						!(isString = SelectorString.is(input.curr()))
-				)
+				)(input)
 
 				const value = isString
 					? input.curr()

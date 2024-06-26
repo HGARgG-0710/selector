@@ -1,4 +1,4 @@
-import { PredicateMap, StreamParser, preserve } from "@hgargg-0710/parsers.js"
+import { BasicParser, PredicateMap } from "@hgargg-0710/parsers.js"
 import { CompoundSelector } from "../compound/tokens.mjs"
 import { Combinator } from "./tokens.mjs"
 
@@ -32,7 +32,7 @@ export const combinatorMap = PredicateMap(
 			}
 		]
 	]),
-	preserve
+	(input) => [input.next()]
 )
 
-export const SelectorCombinatorParser = StreamParser(combinatorMap)
+export const SelectorCombinatorParser = BasicParser(combinatorMap, [])

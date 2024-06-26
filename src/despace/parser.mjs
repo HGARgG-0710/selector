@@ -18,7 +18,7 @@ export const singleSpaceMap = PredicateMap(
 						...(input.curr() ? [input.curr()] : [])
 					])
 				}
-				return [compound].concat(input.curr() ? [input.curr()] : [])
+				return [compound].concat(preserve(input))
 			}
 		],
 		[Combinator, preserve]

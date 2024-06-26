@@ -24,6 +24,8 @@ export const [
 	Sibling,
 	Quote,
 	Comma, 
+	Ampersand, 
+	Escape, 
 	SelectorSymbol
 ] = [
 	"hash",
@@ -48,5 +50,6 @@ export const [
 	"sibling",
 	"quote",
 	"comma",
+	"ampersand", 
 	"symbol"
 ].map(TokenType)
