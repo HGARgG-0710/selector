@@ -1,4 +1,4 @@
-import { TokenType } from "@hgargg-0710/parsers.js"
+import { TokenType, is } from "@hgargg-0710/parsers.js"
 import { function as _f } from "@hgargg-0710/one"
 import {
 	ParentSelector,
@@ -24,5 +24,5 @@ export const Selector = or(
 		PseudoElementSelector,
 		UniversalSelector,
 		ParentSelector
-	].map((x) => x.is)
+	].map(is)
 )

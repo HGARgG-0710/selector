@@ -1,12 +1,17 @@
 import {
-	TypeMap,
 	PredicateMap,
 	TokenSource,
 	read,
 	limit,
 	InputStream,
 	skip,
-	BasicParser
+	BasicParser,
+	is,
+	current,
+	next,
+	output,
+	forward,
+	wrapped
 } from "@hgargg-0710/parsers.js"
 
 import {
@@ -26,7 +31,6 @@ import {
 	DoubleColon,
 	Colon,
 	Any,
-	SelectorSymbol,
 	RectOp,
 	RectCl,
 	Ampersand,
@@ -37,10 +41,11 @@ import { AttributeParser } from "./attribute/parser.mjs"
 
 import { function as _f } from "@hgargg-0710/one"
 import { SubSelector } from "../bracket/tokens.mjs"
+import { SelectorPartial } from "../escaped/tokens.mjs"
 const { trivialCompose } = _f
 
-const readSymbol = (init = "") =>
-	read((input) => SelectorSymbol.is(input.curr()), TokenSource(init))
+const isPartial = trivialCompose(SelectorPartial, current)
+const readSymbol = (init = "") => read(isPartial, TokenSource(init))
 
 const readSimple = (SelectorType, skipFirst) => (input) => {
 	if (skipFirst !== false) input.next()
@@ -54,26 +59,21 @@ const attributeHandler = trivialCompose(
 	limit((input) => !RectCl.is(input.curr()))
 )
 
+const skipSpaces = skip(trivialCompose(is(Space), current))
+
 // ! FIX THE EXPORTS (API, names...)
-export const selectorMap = TypeMap(PredicateMap)(
+export const selectorMap = PredicateMap(
 	new Map([
-		[SelectorHash, readSimple(SelectorId)],
-		[SelectorDot, readSimple(SelectorClass)],
+		[SelectorPartial, readSimple(SelectorElement, false)],
+		[SelectorHash.is, readSimple(SelectorId)],
+		[SelectorDot.is, readSimple(SelectorClass)],
+		[RectOp.is, wrapped(attributeHandler)],
+		[DoubleColon.is, readSimple(PseudoElementSelector)],
 		[
-			RectOp,
-			function (input) {
-				input.next() // [
-				const attributes = attributeHandler(input)
-				input.next() // ]
-				return attributes
-			}
-		],
-		[DoubleColon, readSimple(PseudoElementSelector)],
-		[
-			Colon,
+			Colon.is,
 			function (input) {
 				const name = readSymbol()(input)
-				skip((input) => Space.is(input.curr()))(input)
+				skipSpaces(input)
 				const args = ((x) => (SubSelector.is(x) ? x : false))(input.curr())
 				if (args) input.next()
 				return [
@@ -88,11 +88,10 @@ export const selectorMap = TypeMap(PredicateMap)(
 				]
 			}
 		],
-		[Any, (input) => [UniversalSelector(input.next())]],
-		[SelectorSymbol, readSimple(SelectorElement, false)],
-		[Ampersand, (input) => [ParentSelector(input.next())]]
+		[Any.is, trivialCompose(output, UniversalSelector, next)],
+		[Ampersand.is, trivialCompose(output, ParentSelector, next)]
 	]),
-	(input) => [input.next()]
+	forward
 )
 
 export const SimpleSelectorParser = BasicParser(selectorMap)

@@ -7,17 +7,22 @@ import {
 	EqMatch
 } from "../../char/tokens.mjs"
 
-import { TokenType } from "@hgargg-0710/parsers.js"
+import { TokenType, is } from "@hgargg-0710/parsers.js"
+import { function as _f } from "@hgargg-0710/one"
+
+const { or } = _f
+
 export const [AttributeName, SelectorIdentifier] = ["attrname", "identifier"].map(
 	TokenType
 )
 
-export const isMatch = (y) =>
-	[
+export const isMatch = or(
+	...[
 		EndsWithMatch,
 		IncludesMatch,
 		HyphenBeginMatch,
 		PrefixMatch,
 		FindMatch,
 		EqMatch
-	].some((x) => x.is(y))
+	].map(is)
+)

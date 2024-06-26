@@ -1,4 +1,11 @@
-import { PredicateMap, StreamParser, limit } from "@hgargg-0710/parsers.js"
+import {
+	PredicateMap,
+	StreamParser,
+	current,
+	forward,
+	limit,
+	output
+} from "@hgargg-0710/parsers.js"
 import { CompoundSelector, Selector } from "./tokens.mjs"
 import { function as _f } from "@hgargg-0710/one"
 
@@ -9,12 +16,12 @@ export const compoundMap = PredicateMap(
 		[
 			Selector,
 			trivialCompose(
-				(x) => [x],
+				output,
 				CompoundSelector,
-				limit((input) => Selector(input.curr()))
+				limit(trivialCompose(Selector, current))
 			)
 		]
 	]),
-	(input) => [input.next()]
+	forward
 )
 export const CompoundSelectorParser = StreamParser(compoundMap)

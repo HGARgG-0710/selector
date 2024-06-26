@@ -11,8 +11,13 @@ import {
 	InputStream,
 	PredicateMap,
 	TypeMap,
+	current,
+	forward,
+	is,
 	nested,
-	transform
+	output,
+	transform,
+	wrapped
 } from "@hgargg-0710/parsers.js"
 import { ClBrack, OpBrack } from "../char/tokens.mjs"
 
@@ -25,16 +30,10 @@ const subSelectorMap = TypeMap(PredicateMap)(
 	new Map([
 		[
 			OpBrack,
-			// ? Refactor this? [ought to be a part of 'parsers.js']
-			function (input) {
-				input.next() // (
-				const subselector = SubSelector(parentSelector(input))
-				input.next() // )
-				return [subselector]
-			}
+			trivialCompose(output, wrapped(trivialCompose(SubSelector, parentSelector)))
 		]
 	]),
-	(input) => [input.next()]
+	forward
 )
 
 const structureParser = trivialCompose(
@@ -61,5 +60,5 @@ export const EndParser = trivialCompose(
 const parentSelector = trivialCompose(
 	trivialCompose(transform, EndParser),
 	InputStream,
-	nested(...[OpBrack, ClBrack].map((Border) => (input) => Border.is(input.curr())))
+	nested(...[OpBrack, ClBrack].map((Border) => trivialCompose(is(Border), current)))
 )

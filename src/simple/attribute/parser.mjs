@@ -2,23 +2,25 @@ import {
 	PredicateMap,
 	StreamParser,
 	TokenSource,
-	TypeMap,
 	limit,
 	miss,
 	read,
 	skip
 } from "@hgargg-0710/parsers.js"
-import { SelectorSymbol } from "../../char/tokens.mjs"
 import { AttributeName, SelectorIdentifier, isMatch } from "./tokens.mjs"
 import { SelectorString } from "../../string/tokens.mjs"
+import { SelectorPartial } from "../../escaped/tokens.mjs"
 
-export const attributeMap = TypeMap(PredicateMap)(
+// TODO: REFACTOR THESE KINDS OF DEFINITIONS THROUGHOUT THE LIBRARY...
+const limitPartial = limit((input) => SelectorPartial(input.curr()))
+
+export const attributeMap = PredicateMap(
 	new Map([
 		[
-			SelectorSymbol,
+			SelectorPartial,
 			function (input) {
 				const name = read(
-					(input) => SelectorSymbol.is(input.curr()),
+					(input) => SelectorPartial(input.curr()),
 					TokenSource(AttributeName(""))
 				)(input).value.value
 
@@ -31,7 +33,7 @@ export const attributeMap = TypeMap(PredicateMap)(
 				let isString = false
 				skip(
 					(input) =>
-						!SelectorSymbol.is(input.curr()) &&
+						!SelectorPartial(input.curr()) &&
 						!(isString = SelectorString.is(input.curr()))
 				)(input)
 
@@ -40,11 +42,7 @@ export const attributeMap = TypeMap(PredicateMap)(
 					: read(
 							() => true,
 							TokenSource(SelectorIdentifier(""))
-					  )(
-							InputStream(
-								limit((input) => SelectorSymbol.is(input.curr()))(input)
-							)
-					  )
+					  )(InputStream(limitPartial(input)))
 
 				return [
 					{

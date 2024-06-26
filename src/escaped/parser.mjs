@@ -1,5 +1,5 @@
 import { BasicParser, PredicateMap, TokenSource, TypeMap } from "@hgargg-0710/parsers.js"
-import { Escape, SelectorSymbol } from "../char/tokens.mjs"
+import { Escape, Space } from "../char/tokens.mjs"
 
 export const escapedMap = TypeMap(PredicateMap)(
 	new Map([
@@ -10,10 +10,7 @@ export const escapedMap = TypeMap(PredicateMap)(
 				return [
 					Escape.is(input.curr())
 						? Token.value(input.curr())
-						: read(
-								(input) => SelectorSymbol.is(input.curr()),
-								TokenSource("")
-						  )(input)
+						: read((input) => !Space.is(input.curr()), TokenSource(""))(input)
 				]
 			}
 		]

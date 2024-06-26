@@ -11,3 +11,5 @@
 	4.2. Create validation API; 
 
 5. Refactor (the functions - memory waste...); 
+
+	5.1. Using the new functional aliases from `parsers.js`.
