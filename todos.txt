@@ -3,13 +3,8 @@
 3. Finish: 
 
 	3.1. The generator; 
-	3.2. Fix the 'StreamParser' euphoria;
 
 4. In future: 
 
 	4.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
 	4.2. Create validation API; 
-
-5. Refactor (the functions - memory waste...); 
-
-	5.1. Using the new functional aliases from `parsers.js`.

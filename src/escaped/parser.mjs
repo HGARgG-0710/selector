@@ -3,9 +3,11 @@ import {
 	PredicateMap,
 	TokenSource,
 	TypeMap,
-	read
+	read,
+	Token
 } from "@hgargg-0710/parsers.js"
 import { Escape, Space } from "../char/tokens.mjs"
+import { Escaped } from "./tokens.mjs"
 
 const readUntilSpace = read((input) => !Space.is(input.curr()))
 
@@ -17,8 +19,8 @@ export const escapedMap = TypeMap(PredicateMap)(
 				input.next() // \
 				return [
 					Escape.is(input.curr())
-						? Token.value(input.curr())
-						: readUntilSpace(input, TokenSource(""))
+						? Escaped(Token.value(input.next()))
+						: readUntilSpace(input, TokenSource(Escaped(""))).value
 				]
 			}
 		]

@@ -1,64 +1,156 @@
 [
-	{ "type": "compound", "value": [{ "type": "class", "value": "Abace" }] },
-	{ "type": "compound", "value": [{ "type": "id", "value": "adfa" }] },
 	{
 		"type": "compound",
 		"value": [
-			{ "type": "id", "value": "afadsio" },
-			{ "type": "class", "value": "culul" }
-		]
-	},
-	{
-		"type": "compound",
-		"value": [
-			{ "type": "id", "value": "pararar" },
-			{ "type": "pseudo-class", "value": { "name": "uoauoa" } }
-		]
-	},
-	{
-		"type": "compound",
-		"value": [{ "type": "pseudo-class", "value": { "name": "ioax" } }]
-	},
-	{ "type": "compound", "value": [{ "type": "element", "value": "a" }] },
-	{ "type": "compound", "value": [{ "type": "element", "value": "h1" }] },
-	{
-		"type": "compound",
-		"value": [
-			{ "type": "element", "value": "img" },
-			{ "type": "pseudo-class", "value": { "name": "xaei" } }
-		]
-	},
-	{
-		"type": "compound",
-		"value": [
-			{ "type": "pseudo-element", "value": "before" },
-			{ "type": "pseudo-class", "value": { "name": "focused" } }
-		]
-	},
-	{
-		"type": "compound",
-		"value": [
-			{ "type": "universal", "value": { "type": "any", "value": "*" } },
-			{ "type": "class", "value": "ffda90" }
-		]
-	},
-	{
-		"type": "compound",
-		"value": [
-			{ "type": "class", "value": "KARKAR" },
 			{
-				"type": "attribute",
+				"type": "class",
 				"value": {
-					"name": "x",
-					"comparison": { "type": "eq", "value": "=" },
-					"value": { "value": { "type": "identifier", "value": "iegbrau!" } }
+					"type": "identifier",
+					"value": [
+						{ "type": "id-chars", "value": "Abace" },
+						{ "type": "escaped", "value": "KER" }
+					]
+				}
+			}
+		]
+	},
+	{
+		"combinator": { "type": "space", "value": " " },
+		"args": [
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "id",
+						"value": {
+							"type": "identifier",
+							"value": [
+								{ "type": "id-chars", "value": "ad" },
+								{ "type": "escaped", "value": "LOOLO" }
+							]
+						}
+					}
+				]
+			},
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "element",
+						"value": {
+							"type": "identifier",
+							"value": [
+								{ "type": "id-chars", "value": "fa" },
+								{ "type": "escaped", "value": "\\" }
+							]
+						}
+					}
+				]
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "id",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "afadsio" }]
 				}
 			},
 			{
-				"type": "attribute",
+				"type": "class",
 				"value": {
-					"name": "olololo",
-					"value": { "value": { "type": "identifier", "value": "" } }
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "culul" }]
+				}
+			}
+		]
+	},
+	{
+		"combinator": { "type": "space", "value": " " },
+		"args": [
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "id",
+						"value": {
+							"type": "identifier",
+							"value": [
+								{ "type": "id-chars", "value": "pa" },
+								{ "type": "escaped", "value": "XE" }
+							]
+						}
+					}
+				]
+			},
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "element",
+						"value": {
+							"type": "identifier",
+							"value": [{ "type": "id-chars", "value": "rarar" }]
+						}
+					},
+					{
+						"type": "pseudo-class",
+						"value": {
+							"name": {
+								"type": "identifier",
+								"value": [{ "type": "id-chars", "value": "uoauoa" }]
+							}
+						}
+					}
+				]
+			}
+		]
+	},
+	{
+		"combinator": { "type": "space", "value": " " },
+		"args": [
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "pseudo-class",
+						"value": {
+							"name": {
+								"type": "identifier",
+								"value": [
+									{ "type": "id-chars", "value": "ioa" },
+									{ "type": "escaped", "value": "LEER" }
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": "compound",
+				"value": [
+					{
+						"type": "element",
+						"value": {
+							"type": "identifier",
+							"value": [{ "type": "id-chars", "value": "x" }]
+						}
+					}
+				]
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "element",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "a" }]
 				}
 			}
 		]
@@ -66,20 +158,132 @@
 	{
 		"type": "compound",
 		"value": [
-			{ "type": "class", "value": "rhubab" },
 			{
-				"type": "attribute",
+				"type": "element",
 				"value": {
-					"name": "Tower",
-					"comparison": { "type": "includes", "value": "~=" },
-					"value": { "value": { "type": "identifier", "value": "eel" } }
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "h1" }]
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "element",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "img" }]
+				}
+			},
+			{
+				"type": "pseudo-class",
+				"value": {
+					"name": {
+						"type": "identifier",
+						"value": [{ "type": "id-chars", "value": "xaei" }]
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "pseudo-element",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "before" }]
+				}
+			},
+			{
+				"type": "pseudo-class",
+				"value": {
+					"name": {
+						"type": "identifier",
+						"value": [{ "type": "id-chars", "value": "focused" }]
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "universal", "value": { "type": "any", "value": "*" } },
+			{
+				"type": "class",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "ffda90" }]
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "class",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "KARKAR" }]
 				}
 			},
 			{
 				"type": "attribute",
 				"value": {
-					"name": "no",
-					"value": { "value": { "type": "identifier", "value": "" } }
+					"name": {
+						"type": "identifier",
+						"value": [{ "type": "id-chars", "value": "x" }]
+					},
+					"comparison": { "type": "eq", "value": "=" },
+					"value": {
+						"type": "string",
+						"value": [
+							{
+								"value": {
+									"type": "string-chars",
+									"value": "Siegbrau!\"rolololo"
+								}
+							}
+						]
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{
+				"type": "class",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "rhubab" }]
+				}
+			},
+			{
+				"type": "attribute",
+				"value": {
+					"name": {
+						"type": "identifier",
+						"value": [{ "type": "id-chars", "value": "Tower" }]
+					},
+					"comparison": { "type": "includes", "value": "~=" },
+					"value": {
+						"type": "string",
+						"value": [
+							{
+								"value": {
+									"type": "string-chars",
+									"value": "Feel no beginning and I feel no ee-e-e-ee-nd!"
+								}
+							}
+						]
+					}
 				}
 			}
 		]
@@ -88,8 +292,22 @@
 		"type": "compound",
 		"value": [
 			{ "type": "parent", "value": { "type": "ampersand", "value": "&" } },
-			{ "type": "class", "value": "arcticground" },
-			{ "type": "pseudo-class", "value": { "name": "held" } }
+			{
+				"type": "class",
+				"value": {
+					"type": "identifier",
+					"value": [{ "type": "id-chars", "value": "arcticground" }]
+				}
+			},
+			{
+				"type": "pseudo-class",
+				"value": {
+					"name": {
+						"type": "identifier",
+						"value": [{ "type": "id-chars", "value": "held" }]
+					}
+				}
+			}
 		]
 	}
 ]

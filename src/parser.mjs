@@ -7,6 +7,7 @@ import { EndParser } from "./bracket/parser.mjs"
 
 const { trivialCompose } = _f
 
+// ! problem [1]: with 'simple' parser and (as consequence), __everything__ related to names on that level (same as before: NEED TO PARSE IDENTIFIERS INSTEAD OF STRINGS...);
 export const SelectorParser = trivialCompose(
 	(x) => (x.length === 1 ? x[0] : x),
 	...[EndParser, SelectorStringParser, EscapeParser]

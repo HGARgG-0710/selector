@@ -37,18 +37,16 @@ import {
 	Space
 } from "../char/tokens.mjs"
 
-import { AttributeParser } from "./attribute/parser.mjs"
+import { AttributeParser, parseIdentifier } from "./attribute/parser.mjs"
 
 import { function as _f } from "@hgargg-0710/one"
 import { SubSelector } from "../bracket/tokens.mjs"
 import { SelectorPartial } from "../escaped/tokens.mjs"
 const { trivialCompose } = _f
 
-const readSymbol = read(trivialCompose(SelectorPartial, current))
-
 const readSimple = (SelectorType, skipFirst) => (input) => {
 	if (skipFirst !== false) input.next()
-	return [readSymbol(input, TokenSource(SelectorType(""))).value]
+	return [SelectorType(parseIdentifier(input))]
 }
 
 const attributeHandler = trivialCompose(
@@ -72,20 +70,23 @@ export const selectorMap = PredicateMap(
 			Colon.is,
 			function (input) {
 				input.next() // :
-				const name = readSymbol(input, TokenSource({ value: "" })).value.value
+				const name = parseIdentifier(input)
+				// ! PROOBLLEM [1]: this thing is SUPPOSED TO work with ALL the identifiers (and not just here...);
+				// ! problem [2]: only ONE space is to be ignored. 
+				// ! problem [3]: INSIDE A STRING - one must skip a newline, when encountering '\\' (that being, one must CHECK IF a given 'Escaped' is an 'Escaped(Space)');
+				// ^ CONCLUSION [3.1]: order of parsing MUST BE CHANGED again (this time - SPACES are found BEFORE back-slashed characters in Tokenizer)
+				// ! problem [4]: one must _LIMIT_ the 'escaped' by 6 characters. [IF it's exactly 6, then the 'Space' is not skipped, OTHERWISE - skip it]...; 
 				skipSpaces(input)
 				const args = ((x) => (SubSelector.is(x) ? x : false))(input.curr())
 				if (args) input.next()
-				return [
-					PseudoClassSelector(
-						args
-							? {
-									name,
-									args
-							  }
-							: { name }
-					)
-				]
+				return args
+					? [
+							PseudoClassSelector({
+								name,
+								args
+							})
+					  ]
+					: [PseudoClassSelector({ name }), Space(" ")]
 			}
 		],
 		[Any.is, trivialCompose(output, UniversalSelector, next)],
