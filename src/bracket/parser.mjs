@@ -36,7 +36,7 @@ const subSelectorMap = TypeMap(PredicateMap)(
 	forward
 )
 
-const structureParser = trivialCompose(
+const finaleParser = trivialCompose(
 	...[
 		SelectorCombinatorParser,
 		DeSpaceSelector,
@@ -44,20 +44,26 @@ const structureParser = trivialCompose(
 		SimpleSelectorParser
 	]
 		.map((x) => [x, InputStream])
-		.flat(),
-	(x) =>
-		x.length - 1 ? SelectorListToken(x.map(structureParser)) : structureParser(x[0])
+		.flat()
 )
 
-export const SelectorListParser = trivialCompose(SelectorCommaParser, BracketParser)
+const structureParser = (x) =>
+	x instanceof Array && x[0] instanceof Array
+		? x.length - 1
+			? SelectorListToken(x.map(structureParser))
+			: structureParser(x[0])
+		: finaleParser(x)
+
 export const BracketParser = BasicParser(subSelectorMap)
-export const EndParser = trivialCompose(
-	SelectorListParser,
-	structureParser,
-	BracketParser
+export const SelectorListParser = trivialCompose(
+	SelectorCommaParser,
+	InputStream,
+	BracketParser, 
 )
+export const EndParser = trivialCompose(structureParser, SelectorListParser)
 
-const parentSelector = trivialCompose(
+// * 'var' (seemingly) is necessary here, because otherwise one falls into a recursive-dependency issue with `const`....
+var parentSelector = trivialCompose(
 	trivialCompose(transform, EndParser),
 	InputStream,
 	nested(...[OpBrack, ClBrack].map((Border) => trivialCompose(is(Border), current)))

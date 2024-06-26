@@ -1,87 +1,95 @@
 [
-	[{ "type": "compound", "value": [{ "type": "class", "value": "Abace" }] }],
-	[{ "type": "compound", "value": [{ "type": "id", "value": "adfa" }] }],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "id", "value": "afadsio" },
-				{ "type": "class", "value": "culul" }
-			]
-		}
-	],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "id", "value": "pararar" },
-				{ "type": "pseudo-class", "value": "uoauoa" }
-			]
-		}
-	],
-	[{ "type": "compound", "value": [{ "type": "pseudo-class", "value": "ioax" }] }],
-	[{ "type": "compound", "value": [{ "type": "element", "value": "a" }] }],
-	[{ "type": "compound", "value": [{ "type": "element", "value": "h1" }] }],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "element", "value": "img" },
-				{ "type": "pseudo-class", "value": "xaei" }
-			]
-		}
-	],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "pseudo-element", "value": "before" },
-				{ "type": "pseudo-class", "value": "focused" }
-			]
-		}
-	],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "universal", "value": { "type": "any", "value": "*" } },
-				{ "type": "class", "value": "ffda90" }
-			]
-		}
-	],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "class", "value": "KARKAR" },
-				{
-					"type": "attribute",
-					"value": {
-						"name": "x",
-						"comparison": { "type": "eq", "value": "=" },
-						"value": { "type": "string", "value": "Siegbrau!\"rolololo" }
-					}
+	{ "type": "compound", "value": [{ "type": "class", "value": "Abace" }] },
+	{ "type": "compound", "value": [{ "type": "id", "value": "adfa" }] },
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "id", "value": "afadsio" },
+			{ "type": "class", "value": "culul" }
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "id", "value": "pararar" },
+			{ "type": "pseudo-class", "value": { "name": "uoauoa" } }
+		]
+	},
+	{
+		"type": "compound",
+		"value": [{ "type": "pseudo-class", "value": { "name": "ioax" } }]
+	},
+	{ "type": "compound", "value": [{ "type": "element", "value": "a" }] },
+	{ "type": "compound", "value": [{ "type": "element", "value": "h1" }] },
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "element", "value": "img" },
+			{ "type": "pseudo-class", "value": { "name": "xaei" } }
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "pseudo-element", "value": "before" },
+			{ "type": "pseudo-class", "value": { "name": "focused" } }
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "universal", "value": { "type": "any", "value": "*" } },
+			{ "type": "class", "value": "ffda90" }
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "class", "value": "KARKAR" },
+			{
+				"type": "attribute",
+				"value": {
+					"name": "x",
+					"comparison": { "type": "eq", "value": "=" },
+					"value": { "value": { "type": "identifier", "value": "iegbrau!" } }
 				}
-			]
-		}
-	],
-	[
-		{
-			"type": "compound",
-			"value": [
-				{ "type": "class", "value": "rhubab" },
-				{
-					"type": "attribute",
-					"value": {
-						"name": "Tower",
-						"comparison": { "type": "includes", "value": "~=" },
-						"value": {
-							"type": "string",
-							"value": "Feel no beginning and I feel no ee-e-e-ee-nd!"
-						}
-					}
+			},
+			{
+				"type": "attribute",
+				"value": {
+					"name": "olololo",
+					"value": { "value": { "type": "identifier", "value": "" } }
 				}
-			]
-		}
-	]
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "class", "value": "rhubab" },
+			{
+				"type": "attribute",
+				"value": {
+					"name": "Tower",
+					"comparison": { "type": "includes", "value": "~=" },
+					"value": { "value": { "type": "identifier", "value": "eel" } }
+				}
+			},
+			{
+				"type": "attribute",
+				"value": {
+					"name": "no",
+					"value": { "value": { "type": "identifier", "value": "" } }
+				}
+			}
+		]
+	},
+	{
+		"type": "compound",
+		"value": [
+			{ "type": "parent", "value": { "type": "ampersand", "value": "&" } },
+			{ "type": "class", "value": "arcticground" },
+			{ "type": "pseudo-class", "value": { "name": "held" } }
+		]
+	}
 ]

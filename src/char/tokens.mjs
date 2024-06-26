@@ -51,5 +51,6 @@ export const [
 	"quote",
 	"comma",
 	"ampersand", 
+	"escape",
 	"symbol"
 ].map(TokenType)

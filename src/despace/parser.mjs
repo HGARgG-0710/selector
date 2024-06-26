@@ -4,7 +4,8 @@ import {
 	current,
 	miss,
 	preserve,
-	skip
+	skip,
+	is
 } from "@hgargg-0710/parsers.js"
 import { CompoundSelector } from "../compound/tokens.mjs"
 import { Combinator } from "../combinator/tokens.mjs"

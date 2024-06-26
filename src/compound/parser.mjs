@@ -1,6 +1,6 @@
 import {
+	BasicParser,
 	PredicateMap,
-	StreamParser,
 	current,
 	forward,
 	limit,
@@ -11,17 +11,14 @@ import { function as _f } from "@hgargg-0710/one"
 
 const { trivialCompose } = _f
 
+export const CompoundParser = trivialCompose(
+	output,
+	CompoundSelector,
+	limit(trivialCompose(Selector, current))
+)
+
 export const compoundMap = PredicateMap(
-	new Map([
-		[
-			Selector,
-			trivialCompose(
-				output,
-				CompoundSelector,
-				limit(trivialCompose(Selector, current))
-			)
-		]
-	]),
+	new Map([[Selector, (input) => CompoundParser(input, [])]]),
 	forward
 )
-export const CompoundSelectorParser = StreamParser(compoundMap)
+export const CompoundSelectorParser = BasicParser(compoundMap)

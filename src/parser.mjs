@@ -8,6 +8,7 @@ import { EndParser } from "./bracket/parser.mjs"
 const { trivialCompose } = _f
 
 export const SelectorParser = trivialCompose(
+	(x) => (x.length === 1 ? x[0] : x),
 	...[EndParser, SelectorStringParser, EscapeParser]
 		.map((x) => [x, InputStream])
 		.flat(),

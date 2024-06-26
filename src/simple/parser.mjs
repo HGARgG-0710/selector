@@ -44,12 +44,11 @@ import { SubSelector } from "../bracket/tokens.mjs"
 import { SelectorPartial } from "../escaped/tokens.mjs"
 const { trivialCompose } = _f
 
-const isPartial = trivialCompose(SelectorPartial, current)
-const readSymbol = (init = "") => read(isPartial, TokenSource(init))
+const readSymbol = read(trivialCompose(SelectorPartial, current))
 
 const readSimple = (SelectorType, skipFirst) => (input) => {
 	if (skipFirst !== false) input.next()
-	return [readSymbol(SelectorType(""))(input).value]
+	return [readSymbol(input, TokenSource(SelectorType(""))).value]
 }
 
 const attributeHandler = trivialCompose(
@@ -72,7 +71,8 @@ export const selectorMap = PredicateMap(
 		[
 			Colon.is,
 			function (input) {
-				const name = readSymbol()(input)
+				input.next() // :
+				const name = readSymbol(input, TokenSource({ value: "" })).value.value
 				skipSpaces(input)
 				const args = ((x) => (SubSelector.is(x) ? x : false))(input.curr())
 				if (args) input.next()

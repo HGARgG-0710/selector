@@ -2,16 +2,20 @@ import {
 	PredicateMap,
 	StreamParser,
 	TokenSource,
+	current,
 	limit,
 	miss,
 	read,
-	skip
+	skip,
+	InputStream
 } from "@hgargg-0710/parsers.js"
 import { AttributeName, SelectorIdentifier, isMatch } from "./tokens.mjs"
 import { SelectorString } from "../../string/tokens.mjs"
 import { SelectorPartial } from "../../escaped/tokens.mjs"
+import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
 
 // TODO: REFACTOR THESE KINDS OF DEFINITIONS THROUGHOUT THE LIBRARY...
+const readName = read(trivialCompose(SelectorPartial, current))
 const limitPartial = limit((input) => SelectorPartial(input.curr()))
 
 export const attributeMap = PredicateMap(
@@ -19,10 +23,7 @@ export const attributeMap = PredicateMap(
 		[
 			SelectorPartial,
 			function (input) {
-				const name = read(
-					(input) => SelectorPartial(input.curr()),
-					TokenSource(AttributeName(""))
-				)(input).value.value
+				const name = readName(input, TokenSource(AttributeName(""))).value.value
 
 				let comparison
 				skip(
@@ -39,10 +40,10 @@ export const attributeMap = PredicateMap(
 
 				const value = isString
 					? input.curr()
-					: read(
-							() => true,
+					: read(() => true)(
+							InputStream(limitPartial(input)),
 							TokenSource(SelectorIdentifier(""))
-					  )(InputStream(limitPartial(input)))
+					  )
 
 				return [
 					{

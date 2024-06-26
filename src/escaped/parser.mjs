@@ -1,5 +1,13 @@
-import { BasicParser, PredicateMap, TokenSource, TypeMap } from "@hgargg-0710/parsers.js"
+import {
+	BasicParser,
+	PredicateMap,
+	TokenSource,
+	TypeMap,
+	read
+} from "@hgargg-0710/parsers.js"
 import { Escape, Space } from "../char/tokens.mjs"
+
+const readUntilSpace = read((input) => !Space.is(input.curr()))
 
 export const escapedMap = TypeMap(PredicateMap)(
 	new Map([
@@ -10,7 +18,7 @@ export const escapedMap = TypeMap(PredicateMap)(
 				return [
 					Escape.is(input.curr())
 						? Token.value(input.curr())
-						: read((input) => !Space.is(input.curr()), TokenSource(""))(input)
+						: readUntilSpace(input, TokenSource(""))
 				]
 			}
 		]
