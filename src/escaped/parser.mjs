@@ -20,7 +20,9 @@ export const escapedMap = TypeMap(PredicateMap)(
 			function (input) {
 				input.next() // \
 				return [
-					Escape.is(input.curr()) || Space.is(input.curr())
+					Escape.is(input.curr())
+						? Escaped(input.next().value)
+						: Space.is(input.curr())
 						? Escaped(input.next())
 						: readEscaped(input, TokenSource(Escaped(""))).value
 				]

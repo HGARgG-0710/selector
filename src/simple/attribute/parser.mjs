@@ -30,24 +30,35 @@ export const attributeMap = PredicateMap(
 				let comparison
 				skip(
 					(input) =>
-						!isMatch(input.curr()) || ((comparison = input.next()) && false)
+						!SelectorPartial(input.curr()) &&
+						(!isMatch(input.curr()) || ((comparison = input.next()) && false))
 				)(input)
 
 				let isString = false
-				skip(
-					(input) =>
-						!SelectorPartial(input.curr()) &&
-						!(isString = SelectorString.is(input.curr()))
-				)(input)
+				if (comparison) {
+					skip(
+						(input) =>
+							!SelectorPartial(input.curr()) &&
+							!(isString = SelectorString.is(input.curr()))
+					)(input)
+				}
 
-				const value = isString ? input.curr() : parseIdentifier(input)
+				const value = isString
+					? comparison
+						? input.curr()
+						: false
+					: parseIdentifier(input)
 
 				return [
-					{
-						name,
-						comparison,
-						value
-					}
+					comparison
+						? {
+								name,
+								comparison,
+								value
+						  }
+						: {
+								name
+						  }
 				]
 			}
 		]

@@ -7,6 +7,8 @@ import { EndParser } from "./bracket/parser.mjs"
 
 const { trivialCompose } = _f
 
+// todo: EXPORT FROM ALL THE PARSERS PRESENT WITHIN THE LIBRARY!
+
 export const SelectorParser = trivialCompose(
 	...[EndParser, SelectorStringParser, EscapeParser]
 		.map((x) => [x, InputStream])

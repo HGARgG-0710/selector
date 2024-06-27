@@ -47,7 +47,7 @@ export const selectorCharMap = RegExpMap(
 			[/\$=/, EndsWithMatch],
 			[/~=/, IncludesMatch],
 			[/\|=/, HyphenBeginMatch],
-			[/^=/, PrefixMatch],
+			[/\^=/, PrefixMatch],
 			[/\*=/, FindMatch],
 			[/=/, EqMatch],
 			[/\*/, Any],

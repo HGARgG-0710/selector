@@ -28,8 +28,7 @@ import {
 	Any,
 	RectOp,
 	RectCl,
-	Ampersand,
-	Space
+	Ampersand
 } from "../char/tokens.mjs"
 
 import { AttributeParser, parseIdentifier } from "./attribute/parser.mjs"
@@ -67,14 +66,14 @@ export const selectorMap = PredicateMap(
 				const args = ((x) => (SubSelector.is(x) ? x : false))(input.curr())
 				if (args) input.next()
 				return [
-					PseudoClassSelector([
+					PseudoClassSelector(
 						args
 							? {
 									name,
 									args
 							  }
 							: { name }
-					])
+					)
 				]
 			}
 		],

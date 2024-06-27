@@ -4,7 +4,7 @@ import { SelectorCombinatorParser } from "../combinator/parser.mjs"
 
 import { SelectorCommaParser } from "../list/parser.mjs"
 import { DeSpaceSelector } from "../despace/parser.mjs"
-import { SelectorListToken } from "../list/tokens.mjs"
+import { SelectorList } from "../list/tokens.mjs"
 
 import {
 	BasicParser,
@@ -54,7 +54,7 @@ const finaleParser = trivialCompose(
 const structureParser = (x) =>
 	x instanceof Array && x[0] instanceof Array
 		? x.length - 1
-			? SelectorListToken(x.map(structureParser))
+			? SelectorList(x.map(structureParser))
 			: structureParser(x[0])
 		: finaleParser(x)[0]
 

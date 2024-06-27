@@ -12,16 +12,18 @@ const simpleTests = [
 	"img:xaei",
 	"::before:focused",
 	"*.ffda90",
-	".KARKAR[x='Siegbrau!\"rolololo\\Kappa\\ Nurni\\RHUBY\\lololololol']",
+	".KARKAR[x^='Siegbrau!\"rolololo\\Kappa\\ Nurni\\RHUBY\\lololololol']",
 	'.rhubab[Tower~="Feel no beginning and I feel no ee-e-e-ee-nd!"]',
-	"&.arcticground:held"
+	"&.arcticground:held",
+	"x[IAMPRESENT]"
 ]
 
 writeFile("simple.json", JSON.stringify(simpleTests.map(parse)))
 
 const complexTests = [
-	":RHUBAB      Sindarin",
+	":RHUBAB      Sindarin[quan$=luni]",
 	"RAF.Kili#Fili* | oin[Thorin|='Juli\"f\\ \\ALLFLAA \\nuda da'] + Gloin[poup*='MARCH'] > Nori     Ori &",
-	"AXE:is(sunborn:JACOB[R='rolololololololo'] rafrafraf, Kaukail|POPOP:has(Singularis, poropr:bark.toto, marauder:is(Nott:not(.good), bad))) ~ ART:vandalay, Regege:sinta saggaga* > &, *.classed"
+	"AXE:is(sunborn:JACOB[R='rolololololololo'] rafrafraf, Kaukail|POPOP:has(Singularis, poropr:bark.toto, marauder:is(Nott:not(.good), bad))) ~ ART:vandalay, ~ Regege:sinta saggaga* > &, + *.classed, &:sought",
+	"arch:sought(nemesis.dingin)"
 ]
 writeFile("complex.json", JSON.stringify(complexTests.map(parse)))

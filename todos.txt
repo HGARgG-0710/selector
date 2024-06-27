@@ -1,7 +1,5 @@
 1. Documentation [finish the API]; 
-2. Testing (parser, generator);
-
-	2.1. parser - write new tests...; 
+2. Testing - generator;
 
 3. Finish: 
 
@@ -11,3 +9,4 @@
 
 	4.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
 	4.2. Create validation API; 
+	4.3. Add a 'specificity' function for calculating specificity of a given selector
