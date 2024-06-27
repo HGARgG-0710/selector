@@ -16,7 +16,6 @@ import {
 	is,
 	nested,
 	output,
-	transform,
 	wrapped
 } from "@hgargg-0710/parsers.js"
 import { ClBrack, OpBrack } from "../char/tokens.mjs"
@@ -26,13 +25,18 @@ import { SubSelector } from "./tokens.mjs"
 
 const { trivialCompose } = _f
 
+const nestedBrack = trivialCompose(
+	InputStream,
+	nested(...[OpBrack, ClBrack].map((Border) => trivialCompose(is(Border), current)))
+)
+
+export const SubSelectorHandler = trivialCompose(
+	output,
+	wrapped(trivialCompose(SubSelector, (input) => EndParser(nestedBrack(input))))
+)
+
 const subSelectorMap = TypeMap(PredicateMap)(
-	new Map([
-		[
-			OpBrack,
-			trivialCompose(output, wrapped(trivialCompose(SubSelector, parentSelector)))
-		]
-	]),
+	new Map([[OpBrack, SubSelectorHandler]]),
 	forward
 )
 
@@ -52,19 +56,12 @@ const structureParser = (x) =>
 		? x.length - 1
 			? SelectorListToken(x.map(structureParser))
 			: structureParser(x[0])
-		: finaleParser(x)
+		: finaleParser(x)[0]
 
 export const BracketParser = BasicParser(subSelectorMap)
 export const SelectorListParser = trivialCompose(
 	SelectorCommaParser,
 	InputStream,
-	BracketParser, 
+	BracketParser
 )
 export const EndParser = trivialCompose(structureParser, SelectorListParser)
-
-// * 'var' (seemingly) is necessary here, because otherwise one falls into a recursive-dependency issue with `const`....
-var parentSelector = trivialCompose(
-	trivialCompose(transform, EndParser),
-	InputStream,
-	nested(...[OpBrack, ClBrack].map((Border) => trivialCompose(is(Border), current)))
-)

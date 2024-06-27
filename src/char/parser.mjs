@@ -32,8 +32,8 @@ const { anything, space, global } = regex
 export const selectorCharMap = RegExpMap(
 	new Map(
 		[
-			[space(), Space],
 			[/\\/, Escape],
+			[space(), Space],
 			[/#/, SelectorHash],
 			[/\./, SelectorDot],
 			[/\[/, RectOp],

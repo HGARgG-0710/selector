@@ -5,11 +5,12 @@ import {
 	TokenSource,
 	TypeMap,
 	current,
+	destroy,
 	forward,
 	is,
 	read
 } from "@hgargg-0710/parsers.js"
-import { SelectorSymbol } from "../../char/tokens.mjs"
+import { SelectorSymbol, Space } from "../../char/tokens.mjs"
 import { IdentifierCharacters, SelectorIdentifier } from "./tokens.mjs"
 
 import { function as _f } from "@hgargg-0710/one"
@@ -23,7 +24,8 @@ export const identifierMap = TypeMap(PredicateMap)(
 		[
 			SelectorSymbol,
 			(input) => [readSymbol(input, TokenSource(IdentifierCharacters(""))).value]
-		]
+		],
+		[Space, destroy]
 	]),
 	forward
 )

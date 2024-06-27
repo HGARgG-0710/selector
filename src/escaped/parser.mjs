@@ -3,13 +3,15 @@ import {
 	PredicateMap,
 	TokenSource,
 	TypeMap,
-	read,
-	Token
+	forward,
+	read
 } from "@hgargg-0710/parsers.js"
 import { Escape, Space } from "../char/tokens.mjs"
 import { Escaped } from "./tokens.mjs"
 
-const readUntilSpace = read((input) => !Space.is(input.curr()))
+const readEscaped = read(
+	(input, i) => !Space.is(input.curr()) && !Escape.is(input.curr()) && i < 6
+)
 
 export const escapedMap = TypeMap(PredicateMap)(
 	new Map([
@@ -18,13 +20,13 @@ export const escapedMap = TypeMap(PredicateMap)(
 			function (input) {
 				input.next() // \
 				return [
-					Escape.is(input.curr())
-						? Escaped(Token.value(input.next()))
-						: readUntilSpace(input, TokenSource(Escaped(""))).value
+					Escape.is(input.curr()) || Space.is(input.curr())
+						? Escaped(input.next())
+						: readEscaped(input, TokenSource(Escaped(""))).value
 				]
 			}
 		]
 	]),
-	(input) => [input.next()]
+	forward
 )
 export const EscapeParser = BasicParser(escapedMap)

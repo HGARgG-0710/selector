@@ -9,10 +9,10 @@ import {
 	forward,
 	preserve,
 	read,
-	limit
+	delimited
 } from "@hgargg-0710/parsers.js"
 import { SelectorString, StringCharacters } from "./tokens.mjs"
-import { Quote } from "../char/tokens.mjs"
+import { Quote, Space } from "../char/tokens.mjs"
 
 import { function as _f, map } from "@hgargg-0710/one"
 import { Escaped } from "../escaped/tokens.mjs"
@@ -37,9 +37,10 @@ const quoteRead = toObject(
 				SelectorString,
 				StringCharacterParser,
 				InputStream,
-				limit(
+				delimited(
 					(input) =>
-						!Quote.is(input.curr()) || Token.value(input.curr()) !== quote
+						!Quote.is(input.curr()) || Token.value(input.curr()) !== quote,
+					(input) => Escaped.is(input.curr()) && Space.is(input.curr().value)
 				)
 			),
 		['"', "'"]
@@ -52,7 +53,7 @@ export const selectorStringMap = TypeMap(PredicateMap)(
 			Quote,
 			function (input) {
 				const quote = input.next().value
-				return [quoteRead[quote](input)]
+				return [quoteRead[quote](input, preserve)]
 			}
 		]
 	]),
