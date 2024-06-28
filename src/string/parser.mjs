@@ -25,7 +25,7 @@ const readUntilEscaped = read((input) => !Escaped.is(input.curr()))
 
 export const stringCharMap = TypeMap(PredicateMap)(
 	new Map([[Escaped, forward]]),
-	(input) => [readUntilEscaped(input, TokenSource(StringCharacters("")))]
+	(input) => [readUntilEscaped(input, TokenSource(StringCharacters(""))).value]
 )
 
 export const StringCharacterParser = BasicParser(stringCharMap)

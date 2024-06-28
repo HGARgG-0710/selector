@@ -36,35 +36,8 @@ import { SelectorString, StringCharacters } from "./string/tokens.mjs"
 import { SubSelector } from "./bracket/tokens.mjs"
 import { SelectorList } from "./list/tokens.mjs"
 
-// % Encounterable tokens' types:
-//  *	1. CombinatorToken (pair/single)
-// 	*	2. CompoundSelector - collection
-// 	!	3. PseudoClassSelector (:...)
-// 	*	4. SelectorElement (...)
-// 	*	5. SelectorId (#...)
-// 	*	6. SelectorClass (.---)
-// 	*	7. SelectorAttribute ([...?=...])
-// 	*	8. PseudoElementSelector (::)
-// 	*	9. UniversalSelector (*)
-// 	*	10. ParentSelector (&)
-// 	*	11. SelectorIdentifier (used for identifiers)
-// 	*	12. IdentifierCharacters ("id-chars", component of `SelectorIdentifier`)
-// 	*	13. Child (as a CombinatorToken's part)
-// 	*	14. Space (as a CombinatorToken's part)
-// 	*	15. Plus (as a CombinatorToken's part)
-// 	*	16. Namespace (as a CombinatorToken's part)
-// 	*	17. Sibling (as a CombinatorToken's part)
-// 	*	18. EndsWithMatch (as "comparison" part of the SelectorAttribute)
-// 	*	19. IncludesMatch (as "comparison" part of the SelectorAttribute)
-// 	*	20. HyphenBegingMatch (as "comparison" part of the SelectorAttribute)
-// 	*	21. PrefixMatch (as "comparison" part of the SelectorAttribute)
-// 	*	22. FindMatch (as "comparison" part of the SelectorAttribute)
-// 	*	23. EqMatch (as "comparison" part of the SelectorAttribute)
-// 	*	24. SelectorString (as value part of the SelectorAttribute)
-// 	*	25. StringCharacters (as part of the 'SelectorString')
-// 	*	26. Escaped (as part of the `StringSelector` or `SelectorIdentifier`)
-// 	*	27. SubSelector (bracketed expression '(...)', a sub-selector)
-// 	*	28. SelectorList (a list of selectors '..., ..., ...')
+import { SelectorTree } from "./tree.mjs"
+import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
 
 const { cache } = _f
 const { toObject } = map
@@ -207,8 +180,6 @@ export const selectorMap = TypeMap(PredicateMap)(
 
 export const SelectorSourceGenerator = SourceGenerator(selectorMap)
 
-// TODO: define!
-// ! For that, one first needs a Tree-type for the output of 'parse'...;
-export const SelectorGenerator = null
+export const SelectorGenerator = trivialCompose(SelectorSourceGenerator, SelectorTree)
 
 export default SelectorGenerator
