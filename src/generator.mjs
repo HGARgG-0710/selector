@@ -2,7 +2,8 @@ import {
 	PredicateMap,
 	SourceGenerator,
 	StringSource,
-	TypeMap
+	TypeMap,
+	miss
 } from "@hgargg-0710/parsers.js"
 import { CombinatorToken } from "./combinator/tokens.mjs"
 import { CompoundSelector } from "./compound/tokens.mjs"
@@ -36,7 +37,7 @@ import { SelectorString, StringCharacters } from "./string/tokens.mjs"
 import { SubSelector } from "./bracket/tokens.mjs"
 import { SelectorList } from "./list/tokens.mjs"
 
-import { SelectorTree } from "./tree.mjs"
+import { SelectorStream } from "./tree.mjs"
 import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
 
 const { cache } = _f
@@ -56,26 +57,27 @@ const elements = toObject(
 const trivial = toObject(
 	cache(
 		(sym) => () => StringSource(sym),
-		["&", "*", ">", " ", "+", "|", "~", "$=", "~=", "|=", "^=", "*=", "="]
+		["&", "*", " > ", " ", " + ", " | ", " ~ ", "$=", "~=", "|=", "^=", "*=", "="]
 	)
 )
-const chars = toObject(
-	cache((sym) => (input) => StringSource(`${sym}${input.curr().value}`), ["", "\\"])
-)
+const chars = (input) => StringSource(`${input.curr().value}`)
 const arrays = toObject(
 	cache(
 		(sym) =>
 			function (input, generator) {
-				const { length } = input.next().value
-				return `${sym}${
-					Array(length)
-						.fill(0)
-						.map(() => {
-							input.next()
-							return generator(input)
-						})
-						.reduce((last, curr) => last.concat(curr), StringSource()).value
-				}${sym}`
+				const { length } = input.curr().value
+				return StringSource(
+					`${sym}${
+						Array(length)
+							.fill(0)
+							.map(() => {
+								input.next()
+								return generator(input)
+							})
+							.reduce((last, curr) => last.concat(curr), StringSource())
+							.value
+					}${sym}`
+				)
 			},
 		["", '"']
 	)
@@ -92,7 +94,10 @@ export const selectorMap = TypeMap(PredicateMap)(
 				const isBinary = length > 1
 				const args = Array(1 + isBinary)
 					.fill(input)
-					.map(generator)
+					.map(() => {
+						input.next()
+						return generator(input)
+					})
 					.map((x) => x.value)
 				return StringSource(
 					`${isBinary ? args[0] : ""}${combinator}${args[+isBinary]}`
@@ -120,7 +125,7 @@ export const selectorMap = TypeMap(PredicateMap)(
 		[
 			SelectorAttribute,
 			function (input, generator) {
-				const { isName: isComparison } = !!input.next().comparison
+				const isComparison = !!input.next().value.comparison
 				const name = generator(input).value
 				if (!isComparison) return StringSource(`[${name}]`)
 
@@ -134,13 +139,19 @@ export const selectorMap = TypeMap(PredicateMap)(
 		[UniversalSelector, trivial["*"]],
 		[ParentSelector, trivial["&"]],
 		[SelectorIdentifier, arrays[""]],
-		[IdentifierCharacters, chars[""]],
-		[Escaped, chars["\\"]],
-		[Child, trivial[">"]],
+		[IdentifierCharacters, chars],
+		[
+			Escaped,
+			function (input) {
+				const escaped = input.curr().value
+				return StringSource(`\\${escaped}${escaped.length < 6 ? " " : ""}`)
+			}
+		],
+		[Child, trivial[" > "]],
 		[Space, trivial[" "]],
-		[Plus, trivial["+"]],
-		[Namespace, trivial["|"]],
-		[Sibling, trivial["~"]],
+		[Plus, trivial[" + "]],
+		[Namespace, trivial[" | "]],
+		[Sibling, trivial[" ~ "]],
 		[EndsWithMatch, trivial["$="]],
 		[IncludesMatch, trivial["~="]],
 		[HyphenBeginMatch, trivial["|="]],
@@ -148,38 +159,49 @@ export const selectorMap = TypeMap(PredicateMap)(
 		[FindMatch, trivial["*="]],
 		[EqMatch, trivial["="]],
 		[SelectorString, arrays['"']],
-		[StringCharacters, chars[""]],
+		[StringCharacters, chars],
 		[
 			SubSelector,
 			function (input, generator) {
 				input.next()
-				return StringSource(`(${string}${generator(input).value})`)
+				return StringSource(`(${generator(input).value})`)
 			}
 		],
 		// ! Refactor.
 		[
 			SelectorList,
 			function (input, generator) {
-				const { length } = input.next().value
-				return `${sym}${
-					Array(length)
-						.fill(0)
-						.map(() => {
-							input.next()
-							return generator(input)
-						})
-						.reduce(
-							(last, curr) => last.concat(curr).concat(", "),
-							StringSource()
-						).value
-				}${sym}`
+				const { length } = input.curr().value
+				const comma = StringSource(", ")
+				return StringSource(
+					`${
+						Array(length)
+							.fill(0)
+							.map(() => {
+								input.next()
+								return generator(input)
+							})
+							.reduce(
+								(last, curr, i) =>
+									last
+										.concat(curr)
+										.concat(i < length - 1 ? comma : StringSource()),
+								StringSource()
+							).value
+					}`
+				)
 			}
 		]
-	])
+	]),
+	miss
 )
 
 export const SelectorSourceGenerator = SourceGenerator(selectorMap)
 
-export const SelectorGenerator = trivialCompose(SelectorSourceGenerator, SelectorTree)
+export const SelectorGenerator = trivialCompose(
+	(x) => x.value,
+	(x) => SelectorSourceGenerator(x, StringSource()),
+	SelectorStream
+)
 
 export default SelectorGenerator

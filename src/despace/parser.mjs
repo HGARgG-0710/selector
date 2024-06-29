@@ -3,9 +3,11 @@ import {
 	StreamParser,
 	current,
 	miss,
-	preserve,
 	skip,
-	is
+	is,
+	forward,
+	BasicParser,
+	destroy
 } from "@hgargg-0710/parsers.js"
 import { CompoundSelector } from "../compound/tokens.mjs"
 import { Combinator } from "../combinator/tokens.mjs"
@@ -19,7 +21,7 @@ const { trivialCompose } = _f
 const skipSpaces = skip(trivialCompose(is(Space), current))
 export const singleSpaceMap = PredicateMap(
 	new Map([
-		[Space.is, miss],
+		[Space.is, destroy],
 		[
 			CompoundSelector.is,
 			function (input) {
@@ -28,16 +30,15 @@ export const singleSpaceMap = PredicateMap(
 					const space = input.next()
 					skipSpaces(input)
 					return [compound].concat([
-						...(CompoundSelector.is(input.curr()) ? [space] : []),
-						...(input.curr() ? [input.curr()] : [])
+						...(CompoundSelector.is(input.curr()) ? [space] : [])
 					])
 				}
-				return [compound].concat(preserve(input))
+				return [compound]
 			}
 		],
-		[Combinator, preserve]
+		[Combinator, forward]
 	]),
-	preserve
+	forward
 )
 
-export const DeSpaceSelector = StreamParser(singleSpaceMap)
+export const DeSpaceSelector = BasicParser(singleSpaceMap)

@@ -1,4 +1,4 @@
-import { parse } from "../main.mjs"
+import { generate, parse } from "../main.mjs"
 import { writeFile } from "fs/promises"
 
 const simpleTests = [
@@ -18,12 +18,25 @@ const simpleTests = [
 	"x[IAMPRESENT]"
 ]
 
-writeFile("simple.json", JSON.stringify(simpleTests.map(parse)))
+const parsedSimple = simpleTests.map(parse)
+
+writeFile("simple.json", JSON.stringify(parsedSimple))
 
 const complexTests = [
 	":RHUBAB      Sindarin[quan$=luni]",
-	"RAF.Kili#Fili* | oin[Thorin|='Juli\"f\\ \\ALLFLAA \\nuda da'] + Gloin[poup*='MARCH'] > Nori     Ori &",
+	"RAF.Kili#Fili* | oin[Thorin|='Juli\"f\\ \\ALLFLAA \\nuda da']+ Gloin[poup*='MARCH'] >Nori     Ori &",
 	"AXE:is(sunborn:JACOB[R='rolololololololo'] rafrafraf, Kaukail|POPOP:has(Singularis, poropr:bark.toto, marauder:is(Nott:not(.good), bad))) ~ ART:vandalay, ~ Regege:sinta saggaga* > &, + *.classed, &:sought",
 	"arch:sought(nemesis.dingin)"
 ]
-writeFile("complex.json", JSON.stringify(complexTests.map(parse)))
+
+const parsedComplex = complexTests.map(parse)
+
+writeFile("complex.json", JSON.stringify(parsedComplex))
+
+writeFile(
+	"out.json",
+	JSON.stringify({
+		simple: parsedSimple.map(generate),
+		complex: parsedComplex.map(generate)
+	})
+)

@@ -1,33 +1,3 @@
-// % Encounterable tokens' types [tree construction]:
-//  *	1. CombinatorToken (pair/single)
-// 	*	2. CompoundSelector - collection
-// 	*	3. PseudoClassSelector (:...)
-// 	*	4. SelectorElement (...)
-// 	*	5. SelectorId (#...)
-// 	*	6. SelectorClass (.---)
-// 	*	7. SelectorAttribute ([...?=...])
-// 	*	8. PseudoElementSelector (::)
-// 	*	9. UniversalSelector (*)
-// 	*	10. ParentSelector (&)
-// 	*	11. SelectorIdentifier (used for identifiers)
-// 	*	12. IdentifierCharacters ("id-chars", component of `SelectorIdentifier`)
-// 	*	13. Child (as a CombinatorToken's part)
-// 	*	14. Space (as a CombinatorToken's part)
-// 	*	15. Plus (as a CombinatorToken's part)
-// 	*	16. Namespace (as a CombinatorToken's part)
-// 	*	17. Sibling (as a CombinatorToken's part)
-// 	*	18. EndsWithMatch (as "comparison" part of the SelectorAttribute)
-// 	*	19. IncludesMatch (as "comparison" part of the SelectorAttribute)
-// 	*	20. HyphenBegingMatch (as "comparison" part of the SelectorAttribute)
-// 	*	21. PrefixMatch (as "comparison" part of the SelectorAttribute)
-// 	*	22. FindMatch (as "comparison" part of the SelectorAttribute)
-// 	*	23. EqMatch (as "comparison" part of the SelectorAttribute)
-// 	*	24. SelectorString (as value part of the SelectorAttribute)
-// 	*	25. StringCharacters (as part of the 'SelectorString')
-// 	*	26. Escaped (as part of the `StringSelector` or `SelectorIdentifier`)
-// 	*	27. SubSelector (bracketed expression '(...)', a sub-selector)
-// 	!	28. SelectorList (a list of selectors '..., ..., ...')
-
 import {
 	PredicateMap,
 	TypeMap,
@@ -51,7 +21,19 @@ import {
 
 import { function as _f } from "@hgargg-0710/one"
 import { IdentifierCharacters, SelectorIdentifier } from "./simple/identifier/tokens.mjs"
-import { Child, EndsWithMatch, EqMatch, FindMatch, HyphenBeginMatch, IncludesMatch, Namespace, Plus, PrefixMatch, Sibling, Space } from "./char/tokens.mjs"
+import {
+	Child,
+	EndsWithMatch,
+	EqMatch,
+	FindMatch,
+	HyphenBeginMatch,
+	IncludesMatch,
+	Namespace,
+	Plus,
+	PrefixMatch,
+	Sibling,
+	Space
+} from "./char/tokens.mjs"
 import { SelectorString, StringCharacters } from "./string/tokens.mjs"
 import { Escaped } from "./escaped/tokens.mjs"
 import { SubSelector } from "./bracket/tokens.mjs"
@@ -95,7 +77,11 @@ export const selectorTreeMap = TypeMap(PredicateMap)(
 				CombinatorToken,
 				function (tree, treeTurner) {
 					tree.value.combinator = treeTurner(tree.value.combinator)
-					tree.value.args = treeTurner(tree.value.args)
+					tree.value.args = tree.value.args.map(treeTurner)
+					selectorTree(tree.value.args)
+					tree.value.args.children = function () {
+						return this
+					}
 					tree.children = function () {
 						return ["combinator", "args"].map((x) => this.value[x])
 					}
@@ -106,9 +92,9 @@ export const selectorTreeMap = TypeMap(PredicateMap)(
 			[
 				PseudoClassSelector,
 				function (tree, treeTurner) {
-					const areArgs = !!tree.args
-					tree.name = treeTurner(tree.name)
-					if (areArgs) tree.args = treeTurner(tree.args)
+					const areArgs = !!tree.value.args
+					tree.value.name = treeTurner(tree.value.name)
+					if (areArgs) tree.value.args = treeTurner(tree.value.args)
 					tree.children = areArgs
 						? function () {
 								return ["name", "args"].map((x) => this.value[x])
@@ -149,20 +135,20 @@ export const selectorTreeMap = TypeMap(PredicateMap)(
 			[SelectorIdentifier, ValueTree],
 			[IdentifierCharacters, ChildlessTree],
 			[Child, ChildlessTree],
-			[Space, ChildlessTree], 
-			[Plus, ChildlessTree], 
-			[Namespace, ChildlessTree], 
-			[Sibling, ChildlessTree], 
-			[EndsWithMatch, ChildlessTree], 
-			[IncludesMatch, ChildlessTree], 
-			[HyphenBeginMatch, ChildlessTree], 
-			[PrefixMatch, ChildlessTree], 
-			[FindMatch, ChildlessTree], 
-			[EqMatch, ChildlessTree], 
-			[SelectorString, ValueTree], 
-			[StringCharacters, ChildlessTree], 
-			[Escaped, ChildlessTree], 
-			[SubSelector, SimpleTree], 
+			[Space, ChildlessTree],
+			[Plus, ChildlessTree],
+			[Namespace, ChildlessTree],
+			[Sibling, ChildlessTree],
+			[EndsWithMatch, ChildlessTree],
+			[IncludesMatch, ChildlessTree],
+			[HyphenBeginMatch, ChildlessTree],
+			[PrefixMatch, ChildlessTree],
+			[FindMatch, ChildlessTree],
+			[EqMatch, ChildlessTree],
+			[SelectorString, ValueTree],
+			[StringCharacters, ChildlessTree],
+			[Escaped, ChildlessTree],
+			[SubSelector, SimpleTree],
 			[SelectorList, ValueTree]
 		].map(([Key, Funct]) => [Key, trivialCompose(selectorTree, Funct)])
 	)
@@ -175,6 +161,17 @@ const tableFunction = (table, next = null) => {
 }
 
 export const SelectorTree = tableFunction(selectorTreeMap)
-export const SelectorStream = trivialCompose(TreeStream, SelectorTree)
+export const SelectorStream = trivialCompose(
+	TreeStream,
+	(x) => {
+		const newTree = { value: x }
+		newTree.children = function () {
+			return [this.value]
+		}
+		selectorTree(newTree)
+		return newTree
+	},
+	SelectorTree
+)
 
 export default SelectorTree
