@@ -9,7 +9,8 @@ import {
 	forward,
 	preserve,
 	read,
-	delimited
+	delimited,
+	output
 } from "@hgargg-0710/parsers.js"
 import { SelectorString, StringCharacters } from "./tokens.mjs"
 import { Quote, Space } from "../char/tokens.mjs"
@@ -21,7 +22,7 @@ const { cache, trivialCompose } = _f
 const { toObject } = map
 
 // ? Add the '(x) => !x' and other such basic predicate functions to 'parsers.js'? [as aliases...]
-const readUntilEscaped = read((input) => !Escaped.is(input.curr()))
+export const readUntilEscaped = read((input) => !Escaped.is(input.curr()))
 
 export const stringCharMap = TypeMap(PredicateMap)(
 	new Map([[Escaped, forward]]),
@@ -30,7 +31,7 @@ export const stringCharMap = TypeMap(PredicateMap)(
 
 export const StringCharacterParser = BasicParser(stringCharMap)
 
-const quoteRead = toObject(
+export const quoteRead = toObject(
 	cache(
 		(quote) =>
 			trivialCompose(
@@ -56,13 +57,7 @@ const quoteRead = toObject(
 
 export const selectorStringMap = TypeMap(PredicateMap)(
 	new Map([
-		[
-			Quote,
-			function (input) {
-				const quote = input.next().value
-				return [quoteRead[quote](input)]
-			}
-		]
+		[Quote, trivialCompose(output, (input) => quoteRead[input.next().value](input))]
 	]),
 	preserve
 )

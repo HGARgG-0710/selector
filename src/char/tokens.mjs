@@ -1,13 +1,12 @@
 import { TokenType } from "@hgargg-0710/parsers.js"
 
-// ! REPLACE 'TokenType' with 'TokenInstance' to save memory when it comes down to it...
 export const [
 	SelectorHash,
 	SelectorDot,
 	Space,
 	RectOp,
 	RectCl,
-	DoubleColon, 
+	DoubleColon,
 	Colon,
 	Plus,
 	Child,
@@ -23,9 +22,9 @@ export const [
 	Namespace,
 	Sibling,
 	Quote,
-	Comma, 
-	Ampersand, 
-	Escape, 
+	Comma,
+	Ampersand,
+	Escape,
 	SelectorSymbol
 ] = [
 	"hash",
@@ -50,7 +49,7 @@ export const [
 	"sibling",
 	"quote",
 	"comma",
-	"ampersand", 
+	"ampersand",
 	"escape",
 	"symbol"
 ].map(TokenType)

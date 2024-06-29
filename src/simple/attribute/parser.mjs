@@ -6,8 +6,7 @@ import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
 import { IdentifierParser } from "../identifier/parser.mjs"
 import { Space } from "../../char/tokens.mjs"
 
-// TODO: REFACTOR THESE KINDS OF DEFINITIONS THROUGHOUT THE LIBRARY...
-const limitPartial = limit((input) => {
+export const limitPartial = limit((input) => {
 	if (SelectorPartial(input.curr())) return true
 	if (Space.is(input.curr())) {
 		input.prev()
@@ -20,49 +19,41 @@ const limitPartial = limit((input) => {
 })
 export const parseIdentifier = trivialCompose(IdentifierParser, limitPartial)
 
+export function AttributeHandler(input) {
+	const name = parseIdentifier(input)
+
+	let comparison
+	skip(
+		(input) =>
+			!SelectorPartial(input.curr()) &&
+			(!isMatch(input.curr()) || ((comparison = input.next()) && false))
+	)(input)
+
+	let isString = false
+	if (comparison)
+		skip(
+			(input) =>
+				!SelectorPartial(input.curr()) &&
+				!(isString = SelectorString.is(input.curr()))
+		)(input)
+
+	const value = isString ? (comparison ? input.curr() : false) : parseIdentifier(input)
+
+	return [
+		comparison
+			? {
+					name,
+					comparison,
+					value
+			  }
+			: {
+					name
+			  }
+	]
+}
+
 export const attributeMap = PredicateMap(
-	new Map([
-		[
-			SelectorPartial,
-			function (input) {
-				const name = parseIdentifier(input)
-
-				let comparison
-				skip(
-					(input) =>
-						!SelectorPartial(input.curr()) &&
-						(!isMatch(input.curr()) || ((comparison = input.next()) && false))
-				)(input)
-
-				let isString = false
-				if (comparison) {
-					skip(
-						(input) =>
-							!SelectorPartial(input.curr()) &&
-							!(isString = SelectorString.is(input.curr()))
-					)(input)
-				}
-
-				const value = isString
-					? comparison
-						? input.curr()
-						: false
-					: parseIdentifier(input)
-
-				return [
-					comparison
-						? {
-								name,
-								comparison,
-								value
-						  }
-						: {
-								name
-						  }
-				]
-			}
-		]
-	]),
+	new Map([[SelectorPartial, AttributeHandler]]),
 	miss
 )
 export const AttributeParser = StreamParser(attributeMap)

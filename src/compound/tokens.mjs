@@ -14,7 +14,7 @@ import {
 const { or } = _f
 
 export const CompoundSelector = TokenType("compound")
-export const Selector = or(
+export const isSelector = or(
 	...[
 		SelectorElement,
 		SelectorId,

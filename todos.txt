@@ -1,4 +1,4 @@
-1. Documentation [finish the API]; 
+1. Documentation; 
 2. In future: 
 
 	2.1. Completely reverse the parser (reverse every tokenizer/sub-parser)

@@ -12,7 +12,7 @@ import { Escaped } from "./tokens.mjs"
 // TODO: refactor into 'parsers.js'
 export const isHex = (x) => /[a-fA-F0-9]/.test(x)
 
-const readHex = read((input, i) => {
+export const readHex = read((input, i) => {
 	if (i === 6) return false
 	if (Space.is(input.curr())) {
 		input.prev()
@@ -27,27 +27,23 @@ const readHex = read((input, i) => {
 	return true
 })
 
-const readEscaped = read(1)
+export const readEscaped = read(1)
+export function HandleEscaped(input) {
+	input.next() // \
+	return [
+		Escape.is(input.curr())
+			? Escaped(input.next().value)
+			: Space.is(input.curr())
+			? Escaped(input.next())
+			: (isHex(input.curr().value) ? readHex : readEscaped)(
+					input,
+					TokenSource(Escaped(""))
+			  ).value
+	]
+}
 
 export const escapedMap = TypeMap(PredicateMap)(
-	new Map([
-		[
-			Escape,
-			function (input) {
-				input.next() // \
-				return [
-					Escape.is(input.curr())
-						? Escaped(input.next().value)
-						: Space.is(input.curr())
-						? Escaped(input.next())
-						: (isHex(input.curr().value) ? readHex : readEscaped)(
-								input,
-								TokenSource(Escaped(""))
-						  ).value
-				]
-			}
-		]
-	]),
+	new Map([[Escape, HandleEscaped]]),
 	forward
 )
 export const EscapeParser = BasicParser(escapedMap)

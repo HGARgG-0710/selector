@@ -17,7 +17,7 @@ import { function as _f } from "@hgargg-0710/one"
 
 const { trivialCompose } = _f
 
-const readSymbol = read(trivialCompose(is(SelectorSymbol), current))
+export const readSymbol = read(trivialCompose(is(SelectorSymbol), current))
 
 export const identifierMap = TypeMap(PredicateMap)(
 	new Map([

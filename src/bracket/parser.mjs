@@ -25,7 +25,7 @@ import { SubSelector } from "./tokens.mjs"
 
 const { trivialCompose } = _f
 
-const nestedBrack = trivialCompose(
+export const nestedBrack = trivialCompose(
 	InputStream,
 	nested(...[OpBrack, ClBrack].map((Border) => trivialCompose(is(Border), current)))
 )
@@ -35,12 +35,12 @@ export const SubSelectorHandler = trivialCompose(
 	wrapped(trivialCompose(SubSelector, (input) => EndParser(nestedBrack(input))))
 )
 
-const subSelectorMap = TypeMap(PredicateMap)(
+export const subSelectorMap = TypeMap(PredicateMap)(
 	new Map([[OpBrack, SubSelectorHandler]]),
 	forward
 )
 
-const finaleParser = trivialCompose(
+export const flatBracketParser = trivialCompose(
 	...[
 		SelectorCombinatorParser,
 		DeSpaceSelector,
@@ -51,12 +51,12 @@ const finaleParser = trivialCompose(
 		.flat()
 )
 
-const structureParser = (x) =>
+export const recursiveBracketParser = (x) =>
 	x instanceof Array && x[0] instanceof Array
 		? x.length - 1
-			? SelectorList(x.map(structureParser))
-			: structureParser(x[0])
-		: finaleParser(x)[0]
+			? SelectorList(x.map(recursiveBracketParser))
+			: recursiveBracketParser(x[0])
+		: flatBracketParser(x)[0]
 
 export const BracketParser = BasicParser(subSelectorMap)
 export const SelectorListParser = trivialCompose(
@@ -64,4 +64,4 @@ export const SelectorListParser = trivialCompose(
 	InputStream,
 	BracketParser
 )
-export const EndParser = trivialCompose(structureParser, SelectorListParser)
+export const EndParser = trivialCompose(recursiveBracketParser, SelectorListParser)
