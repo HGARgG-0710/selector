@@ -1,19 +1,7 @@
 1. Documentation [finish the API]; 
-2. Testing - parser, generator: 
+2. In future: 
 
-	2.1. BUG [parser]: during parsing, the post-escaped (under-6 length) spaces MUST NOT become parts of a string...; 
-
-		PROBLEM.
-		THOSE FUCKING SPACES. 
-
-		THEY ARE __NOT__ ALWAYS MANDATORY. 
-		ONLY UP TO THE POINT THAT THE CHARACTER IN QUESTION __IS_NOT__A_HEX_VALUE!
-
-		TODO: adjust the parsing of the escaped sequences to this (and the spaces, respectively)
-	
-3. In future: 
-
-	3.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
-	3.2. Create validation API; 
-	3.3. Add a 'specificity' function for calculating specificity of a given selector
-	3.4. Create (generally) a 'Formatter' API to the 'parsers.js'. 
+	2.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
+	2.2. Create validation API; 
+	2.3. Add a 'specificity' function for calculating specificity of a given selector
+	2.4. Create (generally) a 'Formatter' API to the 'parsers.js'. 

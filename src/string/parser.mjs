@@ -34,14 +34,21 @@ const quoteRead = toObject(
 	cache(
 		(quote) =>
 			trivialCompose(
+				(x) => {
+					x.quote = quote
+					return x
+				},
 				SelectorString,
 				StringCharacterParser,
 				InputStream,
-				delimited(
-					(input) =>
-						!Quote.is(input.curr()) || Token.value(input.curr()) !== quote,
-					(input) => Escaped.is(input.curr()) && Space.is(input.curr().value)
-				)
+				(input) =>
+					delimited(
+						(input) =>
+							!Quote.is(input.curr()) ||
+							Token.value(input.curr()) !== quote,
+						(input) =>
+							Escaped.is(input.curr()) && Space.is(input.curr().value)
+					)(input, preserve)
 			),
 		['"', "'"]
 	)
@@ -53,7 +60,7 @@ export const selectorStringMap = TypeMap(PredicateMap)(
 			Quote,
 			function (input) {
 				const quote = input.next().value
-				return [quoteRead[quote](input, preserve)]
+				return [quoteRead[quote](input)]
 			}
 		]
 	]),

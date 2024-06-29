@@ -5,6 +5,10 @@ import {
 	TypeMap,
 	miss
 } from "@hgargg-0710/parsers.js"
+import { function as _f, map } from "@hgargg-0710/one"
+
+import { isHex } from "./escaped/parser.mjs"
+
 import { CombinatorToken } from "./combinator/tokens.mjs"
 import { CompoundSelector } from "./compound/tokens.mjs"
 import { Escaped } from "./escaped/tokens.mjs"
@@ -18,7 +22,6 @@ import {
 	UniversalSelector,
 	ParentSelector
 } from "./simple/tokens.mjs"
-import { function as _f, map } from "@hgargg-0710/one"
 import { IdentifierCharacters, SelectorIdentifier } from "./simple/identifier/tokens.mjs"
 import {
 	Namespace,
@@ -38,9 +41,8 @@ import { SubSelector } from "./bracket/tokens.mjs"
 import { SelectorList } from "./list/tokens.mjs"
 
 import { SelectorStream } from "./tree.mjs"
-import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
 
-const { cache } = _f
+const { cache, trivialCompose } = _f
 const { toObject } = map
 
 // TODO: MAKE KEYS-VALUES PAIRS OF CACHED THINGS INTO EXPORTS!!!!
@@ -79,7 +81,7 @@ const arrays = toObject(
 					}${sym}`
 				)
 			},
-		["", '"']
+		["", '"', "'"]
 	)
 )
 
@@ -144,7 +146,16 @@ export const selectorMap = TypeMap(PredicateMap)(
 			Escaped,
 			function (input) {
 				const escaped = input.curr().value
-				return StringSource(`\\${escaped}${escaped.length < 6 ? " " : ""}`)
+				// ! NOTE: this here is a little bit of a hack (as it relies heavily on the AST's intended structure, and ultimate syntactical correctness of the selector)
+				// Ideally, this sort of stuff should be handled as a reverse-parser
+				input.next()
+				const post = input.prev()
+				const addSpace =
+					isHex(escaped[0]) &&
+					escaped.length < 6 &&
+					(Escaped.is(post) ||
+						(typeof post.value === "string" && isHex(post.value[0])))
+				return StringSource(`\\${escaped}${addSpace ? " " : ""}`)
 			}
 		],
 		[Child, trivial[" > "]],
@@ -158,7 +169,10 @@ export const selectorMap = TypeMap(PredicateMap)(
 		[PrefixMatch, trivial["^="]],
 		[FindMatch, trivial["*="]],
 		[EqMatch, trivial["="]],
-		[SelectorString, arrays['"']],
+		[
+			SelectorString,
+			(input, treeTransform) => arrays[input.curr().quote](input, treeTransform)
+		],
 		[StringCharacters, chars],
 		[
 			SubSelector,
