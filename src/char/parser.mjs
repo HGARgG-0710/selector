@@ -29,7 +29,7 @@ import {
 
 const { anything, space, global } = regex
 
-export const selectorCharMap = RegExpMap(
+export const charMap = RegExpMap(
 	new Map(
 		[
 			[/\\/, Escape],
@@ -61,4 +61,4 @@ export const selectorCharMap = RegExpMap(
 	)
 )
 
-export const SelectorTokenizer = PatternTokenizer(selectorCharMap)
+export const SelectorTokenizer = PatternTokenizer(charMap)

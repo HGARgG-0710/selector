@@ -1,23 +1,8 @@
-import { PredicateMap, StreamParser, limit, miss, skip } from "@hgargg-0710/parsers.js"
+import { PredicateMap, StreamParser, miss, skip } from "@hgargg-0710/parsers.js"
 import { isMatch } from "./tokens.mjs"
 import { SelectorString } from "../../string/tokens.mjs"
-import { SelectorPartial, Escaped } from "../../escaped/tokens.mjs"
-import { trivialCompose } from "@hgargg-0710/one/src/functions/functions.mjs"
-import { IdentifierParser } from "../identifier/parser.mjs"
-import { Space } from "../../char/tokens.mjs"
-
-export const limitPartial = limit((input) => {
-	if (SelectorPartial(input.curr())) return true
-	if (Space.is(input.curr())) {
-		input.prev()
-		return (
-			(Escaped.is(input.curr()) && input.next().value.length !== 6) ||
-			(input.next() && false)
-		)
-	}
-	return false
-})
-export const parseIdentifier = trivialCompose(IdentifierParser, limitPartial)
+import { SelectorPartial } from "../../escaped/tokens.mjs"
+import { parseIdentifier } from "../identifier/parser.mjs"
 
 export function AttributeHandler(input) {
 	const name = parseIdentifier(input)

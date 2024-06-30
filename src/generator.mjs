@@ -191,7 +191,7 @@ export function GenerateSelectorList(input, generator) {
 }
 export const GenerateIdentifier = arrays[""]
 
-export const selectorMap = TypeMap(PredicateMap)(
+export const generatorMap = TypeMap(PredicateMap)(
 	new Map([
 		[CombinatorToken, GenerateCombinator],
 		[CompoundSelector, GenerateCompound],
@@ -225,7 +225,7 @@ export const selectorMap = TypeMap(PredicateMap)(
 	miss
 )
 
-export const SelectorSourceGenerator = SourceGenerator(selectorMap)
+export const SelectorSourceGenerator = SourceGenerator(generatorMap)
 
 export const SelectorGenerator = trivialCompose(
 	(x) => x.value,

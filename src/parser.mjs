@@ -9,19 +9,17 @@ import { EndParser } from "./bracket/parser.mjs"
 
 const { trivialCompose } = _f
 
-export * from "./bracket/parser.mjs"
-export * from "./char/parser.mjs"
-export * from "./combinator/parser.mjs"
-export * from "./compound/parser.mjs"
-export * from "./despace/parser.mjs"
-export * from "./escaped/parser.mjs"
-export * from "./list/parser.mjs"
-export * from "./simple/parser.mjs"
-export * from "./simple/attribute/parser.mjs"
-export * from "./simple/identifier/parser.mjs"
-export * from "./string/parser.mjs"
-
-// todo: EXPORT FROM ALL THE PARSERS PRESENT WITHIN THE LIBRARY!
+export * as char from "./char/parser.mjs"
+export * as escaped from "./escaped/parser.mjs"
+export * as string from "./string/parser.mjs"
+export * as bracket from "./bracket/parser.mjs"
+export * as list from "./list/parser.mjs"
+export * as simple from "./simple/parser.mjs"
+export * as attribute from "./simple/attribute/parser.mjs"
+export * as identifier from "./simple/identifier/parser.mjs"
+export * as compound from "./compound/parser.mjs"
+export * as despace from "./despace/parser.mjs"
+export * as combinator from "./combinator/parser.mjs"
 
 export const SelectorParser = trivialCompose(
 	...[EndParser, SelectorStringParser, EscapeParser]

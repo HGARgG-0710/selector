@@ -69,66 +69,60 @@ export function ValueTree(tree, treeTurner) {
 	return tree
 }
 
-// TODO: REFACTOR ALL THE FUNCTIONS FROM HERE!!! [takes up too much memory...]
-export const selectorTreeMap = TypeMap(PredicateMap)(
+export function AttributeTree(tree, treeTurner) {
+	const isComparison = !!tree.value.comparison
+	tree.value.name = treeTurner(tree.value.name)
+	if (isComparison) {
+		tree.value.comparison = treeTurner(tree.value.comparison)
+		tree.value.value = treeTurner(tree.value.value)
+	}
+	tree.children = isComparison
+		? function () {
+				return ["name", "comparison", "value"].map((x) => this.value[x])
+		  }
+		: function () {
+				return [this.value.name]
+		  }
+	return tree
+}
+
+export function CombinatorTree(tree, treeTurner) {
+	tree.value.combinator = treeTurner(tree.value.combinator)
+	tree.value.args = tree.value.args.map(treeTurner)
+	selectorTree(tree.value.args)
+	tree.value.args.children = function () {
+		return this
+	}
+	tree.children = function () {
+		return ["combinator", "args"].map((x) => this.value[x])
+	}
+	return tree
+}
+
+export function PseudoClassTree(tree, treeTurner) {
+	const areArgs = !!tree.value.args
+	tree.value.name = treeTurner(tree.value.name)
+	if (areArgs) tree.value.args = treeTurner(tree.value.args)
+	tree.children = areArgs
+		? function () {
+				return ["name", "args"].map((x) => this.value[x])
+		  }
+		: function () {
+				return [this.value.name]
+		  }
+	return tree
+}
+
+export const treeMap = TypeMap(PredicateMap)(
 	new Map(
 		[
-			[
-				CombinatorToken,
-				function (tree, treeTurner) {
-					tree.value.combinator = treeTurner(tree.value.combinator)
-					tree.value.args = tree.value.args.map(treeTurner)
-					selectorTree(tree.value.args)
-					tree.value.args.children = function () {
-						return this
-					}
-					tree.children = function () {
-						return ["combinator", "args"].map((x) => this.value[x])
-					}
-					return tree
-				}
-			],
+			[CombinatorToken, CombinatorTree],
 			[CompoundSelector, ValueTree],
-			[
-				PseudoClassSelector,
-				function (tree, treeTurner) {
-					const areArgs = !!tree.value.args
-					tree.value.name = treeTurner(tree.value.name)
-					if (areArgs) tree.value.args = treeTurner(tree.value.args)
-					tree.children = areArgs
-						? function () {
-								return ["name", "args"].map((x) => this.value[x])
-						  }
-						: function () {
-								return [this.value.name]
-						  }
-					return tree
-				}
-			],
+			[PseudoClassSelector, PseudoClassTree],
 			[SelectorElement, SimpleTree],
 			[SelectorId, SimpleTree],
 			[SelectorClass, SimpleTree],
-			[
-				SelectorAttribute,
-				function (tree, treeTurner) {
-					const isComparison = !!tree.value.comparison
-					tree.value.name = treeTurner(tree.value.name)
-					if (isComparison) {
-						tree.value.comparison = treeTurner(tree.value.comparison)
-						tree.value.value = treeTurner(tree.value.value)
-					}
-					tree.children = isComparison
-						? function () {
-								return ["name", "comparison", "value"].map(
-									(x) => this.value[x]
-								)
-						  }
-						: function () {
-								return [this.value.name]
-						  }
-					return tree
-				}
-			],
+			[SelectorAttribute, AttributeTree],
 			[PseudoElementSelector, SimpleTree],
 			[UniversalSelector, ChildlessTree],
 			[ParentSelector, ChildlessTree],
@@ -160,7 +154,7 @@ const tableFunction = (table, next = null) => {
 	return T
 }
 
-export const SelectorTree = tableFunction(selectorTreeMap)
+export const SelectorTree = tableFunction(treeMap)
 export const SelectorStream = trivialCompose(
 	TreeStream,
 	(x) => {

@@ -26,7 +26,7 @@ export function DeSpace(input) {
 	return [compound]
 }
 
-export const singleSpaceMap = PredicateMap(
+export const despaceMap = PredicateMap(
 	new Map([
 		[Space.is, destroy],
 		[CompoundSelector.is, DeSpace],
@@ -35,4 +35,4 @@ export const singleSpaceMap = PredicateMap(
 	forward
 )
 
-export const DeSpaceSelector = BasicParser(singleSpaceMap)
+export const DeSpacer = BasicParser(despaceMap)

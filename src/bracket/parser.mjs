@@ -3,7 +3,7 @@ import { CompoundSelectorParser } from "../compound/parser.mjs"
 import { SelectorCombinatorParser } from "../combinator/parser.mjs"
 
 import { SelectorCommaParser } from "../list/parser.mjs"
-import { DeSpaceSelector } from "../despace/parser.mjs"
+import { DeSpacer } from "../despace/parser.mjs"
 import { SelectorList } from "../list/tokens.mjs"
 
 import {
@@ -41,12 +41,7 @@ export const subSelectorMap = TypeMap(PredicateMap)(
 )
 
 export const flatBracketParser = trivialCompose(
-	...[
-		SelectorCombinatorParser,
-		DeSpaceSelector,
-		CompoundSelectorParser,
-		SimpleSelectorParser
-	]
+	...[SelectorCombinatorParser, DeSpacer, CompoundSelectorParser, SimpleSelectorParser]
 		.map((x) => [x, InputStream])
 		.flat()
 )

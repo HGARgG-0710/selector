@@ -1,7 +1,12 @@
 1. Documentation; 
 2. In future: 
 
-	2.1. Completely reverse the parser (reverse every tokenizer/sub-parser)
-	2.2. Create validation API; 
-	2.3. Add a 'specificity' function for calculating specificity of a given selector
-	2.4. Create (generally) a 'Formatter' API to the 'parsers.js'. 
+	New API : 
+		2.1. Completely reverse the parser (reverse every tokenizer/sub-parser). Replace the 'generator' with it...
+		2.2. Create validation API; 
+		2.3. Add a 'specificity' function for calculating specificity of a given selector
+		2.4. Create (generally) a 'Formatter' API to the 'parsers.js'. 
+
+	Parser improvements?: 
+		2.5. Make 'identifiers' into a separate parsing layer? [the 'attribute' is very convoluted].
+		2.6. Unite the 'string-chars' and 'id-chars' into a single TokenType (there is literally NO difference in their handling anywhere inside the parser...);

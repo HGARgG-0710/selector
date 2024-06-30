@@ -31,7 +31,8 @@ import {
 	Ampersand
 } from "../char/tokens.mjs"
 
-import { AttributeParser, parseIdentifier } from "./attribute/parser.mjs"
+import { AttributeParser } from "./attribute/parser.mjs"
+import { parseIdentifier } from "./identifier/parser.mjs"
 
 import { function as _f } from "@hgargg-0710/one"
 import { SubSelector } from "../bracket/tokens.mjs"
@@ -75,15 +76,15 @@ export const HandlePseudoElement = readSimple(PseudoElementSelector)
 export const HandleUniversal = trivialCompose(output, UniversalSelector, next)
 export const HandleParent = trivialCompose(output, ParentSelector, next)
 
-export const selectorMap = PredicateMap(
+export const simpleMap = PredicateMap(
 	new Map([
 		[SelectorPartial, HandleElement],
 		...[
 			[SelectorHash, HandleId],
 			[SelectorDot, HandleClass],
 			[RectOp, HandleAttribute],
-			[DoubleColon, HandlePseudoElement],
 			[Colon, HandlePseudoClass],
+			[DoubleColon, HandlePseudoElement],
 			[Any, HandleUniversal],
 			[Ampersand, HandleParent]
 		].map(([Type, Funct]) => [Type.is, Funct])
@@ -91,4 +92,4 @@ export const selectorMap = PredicateMap(
 	forward
 )
 
-export const SimpleSelectorParser = BasicParser(selectorMap)
+export const SimpleSelectorParser = BasicParser(simpleMap)

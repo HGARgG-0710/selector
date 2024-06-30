@@ -55,11 +55,11 @@ export const quoteRead = toObject(
 	)
 )
 
-export const selectorStringMap = TypeMap(PredicateMap)(
+export const stringMap = TypeMap(PredicateMap)(
 	new Map([
 		[Quote, trivialCompose(output, (input) => quoteRead[input.next().value](input))]
 	]),
 	preserve
 )
 
-export const SelectorStringParser = StreamParser(selectorStringMap)
+export const SelectorStringParser = StreamParser(stringMap)

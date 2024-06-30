@@ -1,4 +1,4 @@
-import { generate, parse } from "../main.mjs"
+import { generate, parse, generator, parser, tokens, tree } from "../main.mjs"
 import { writeFile } from "fs/promises"
 
 const simpleTests = [
@@ -40,3 +40,8 @@ writeFile(
 		complex: parsedComplex.map(generate)
 	})
 )
+
+console.log(generator)
+console.log(parser)
+console.log(tokens)
+console.log(tree)

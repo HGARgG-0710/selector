@@ -11,14 +11,14 @@ import { function as _f } from "@hgargg-0710/one"
 
 const { trivialCompose } = _f
 
-export const CompoundParser = trivialCompose(
+export const CompoundHandler = trivialCompose(
 	output,
 	CompoundSelector,
 	limit(trivialCompose(isSelector, current))
 )
 
 export const compoundMap = PredicateMap(
-	new Map([[isSelector, (input) => CompoundParser(input, [])]]),
+	new Map([[isSelector, (input) => CompoundHandler(input, [])]]),
 	forward
 )
 export const CompoundSelectorParser = BasicParser(compoundMap)
