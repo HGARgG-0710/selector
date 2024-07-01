@@ -68,193 +68,168 @@ The `parser` module exports are broken down into these submodules, which are the
 
 What follows is the enumeration of different submodules' exports and their meanings/uses within the parser.
 
-<!-- TODO: FINISH! [group things by parsing layers - would be easiest] USE TABLES -->
-
 #### `char`
 
-<!-- ! descriptions -->
-
-| export              | description |
-| ------------------- | ----------- |
-| `SelectorTokenizer` |             |
-| `charMap`           |             |
+| export              | description                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SelectorTokenizer` | The tokenization function (a `PatternTokenizer`). Accepts a `Pattern<string, RegExp, RegExp>` (example: `StringPattern`). Returns a `PatternCollection` |
+| `charMap`           | The `IndexMap`, on which the `SelectorTokenizer` is based. Keys are regular expressions, values - `TokenType`s corresponding to them                    |
 
 #### `escaped`
 
-<!-- ! descriptions -->
-
-| export          | description |
-| --------------- | ----------- |
-| `EscapeParser`  |             |
-| `isHex`         |             |
-| `readHex`       |             |
-| `readEscaped`   |             |
-| `HandleEscaped` |             |
-| `escapedMap`    |             |
+| export          | description                                                                                                                            |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `EscapeParser`  | The main parsing function. Accepts `Stream`, returns an array. Converts `Escape` followed by something else into appropriate `Escaped` |
+| `isHex`         | Checks whether the given string tests positive against `/[0-9a-fA-F]/`                                                                 |
+| `readHex`       | Reads a hexidecimal from the given stream (up to 6 characters), altering the `Stream` passed                                           |
+| `readEscaped`   | Reads a single character from a given `Stream`, altering it                                                                            |
+| `HandleEscaped` | Main handler for the `Escape` token within the `escapeMap` `IndexMap`                                                                  |
+| `escapedMap`    | The `TypeMap`, on which the `EscapeParser` is based                                                                                    |
 
 #### `string`
 
-<!-- ! descriptions -->
-
-| export                  | description |
-| ----------------------- | ----------- |
-| `SelectorStringParser`  |             |
-| `StringCharacterParser` |             |
-| `quoteRead`             |             |
-| `readUntilEscaped`      |             |
-| `stringMap`             |             |
-| `stringCharMap`         |             |
+| export                  | description                                                                                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SelectorStringParser`  | The main parsing function. Accepts `Stream`, returns an array. Converts token sequences between pairs of `"` or `'` to `SelectorString` tokens. Happens after `Escaped` |
+| `StringCharacterParser` | Converts a given `Stream`, which is a result of limiting another `Stream` to an array, in which `SelectorSymbols` were grouped into `StringCharacters`                  |
+| `quoteRead`             | An object containing cached functions for reading a string starting with `'` and `"` respectively                                                                       |
+| `readUntilEscaped`      | Reads from a given `Stream`, altering it, until an `Escaped` is met                                                                                                     |
+| `stringMap`             | A `TypeMap`, on which the `SelectorStringParser` is based                                                                                                               |
+| `stringCharMap`         | A `TypeMap`, on which the `SelectorCharacterParser` is based                                                                                                            |
 
 #### `bracket`
 
-<!-- ! descriptions -->
-
-| export                   | description |
-| ------------------------ | ----------- |
-| `EndParser`              |             |
-| `SelectorListParser`     |             |
-| `BracketParser`          |             |
-| `recursiveBracketParser` |             |
-| `flatBracketParser`      |             |
-| `SubSelectorHandler`     |             |
-| `nestedBrack`            |             |
+| export                   | description                                                                                                                                                           |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EndParser`              | The "latter" part of the `parse` function. It unites `BracketParser`, `list`, `simple`, `compound`, `despace` and `combinator`. It also deals with recursive brackets |
+| `SelectorListParser`     | Accepts `Stream`, puts the input through `BracketParser` and `SelectorCommaParser` (from `list`).                                                                     |
+| `BracketParser`          | Recursively applies `EndParser` on all encountered sub-selectors within the passed `Stream`.                                                                          |
+| `recursiveBracketParser` | The recursive component of the `EndParser`                                                                                                                            |
+| `flatBracketParser`      | The finite ("flat", non-recursive) component of the `EndParser`                                                                                                       |
+| `SubSelectorHandler`     | The handler of sub-selectors within the `subSelectorMap`                                                                                                              |
+| `nestedBrack`            | Returns the `nested` limitation of the given `Stream` to cover the entirety of the current sub-selector                                                               |
+| `subSelectorMap`         | The `TypeMap`, on which the `BracketMap` is based                                                                                                                     |
 
 #### `list`
 
-<!-- ! descriptions -->
-
-| export                | description |
-| --------------------- | ----------- |
-| `SelectorCommaParser` |             |
+| export                | description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `SelectorCommaParser` | Breaks all the pieces of parsed `Stream` into arrays and eliminates all `Comma`s |
 
 #### `simple`
 
-<!-- ! descriptions -->
-
-| export                 | description |
-| ---------------------- | ----------- |
-| `SimpleSelectorParser` |             |
-| `HandleElement`        |             |
-| `HandleId`             |             |
-| `HandleClass`          |             |
-| `HandleAttribute`      |             |
-| `HandlePseudoClass`    |             |
-| `HandlePseudoElement`  |             |
-| `HandleUniversal`      |             |
-| `HandleParent`         |             |
-| `readSimple`           |             |
-| `simpleMap`            |             |
+| export                 | description                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `SimpleSelectorParser` | The main simple selectors' parser. Takes a `Stream`, returns an array of transformed tokens                                    |
+| `HandleElement`        | Handles an element selector                                                                                                    |
+| `HandleId`             | Handles an id selector                                                                                                         |
+| `HandleClass`          | Handles a class selector                                                                                                       |
+| `HandleAttribute`      | Handles an attribute selector                                                                                                  |
+| `HandlePseudoClass`    | Handles a pseudo-class selector                                                                                                |
+| `HandlePseudoElement`  | Handles a pseudo-element selector                                                                                              |
+| `HandleUniversal`      | Handles a universal selector                                                                                                   |
+| `HandleParent`         | Handles a parent selector                                                                                                      |
+| `readSimple`           | Reads an identifier, optionally skipping an element of the passed `Stream`. Sub-routine used for defining some of the handlers |
+| `simpleMap`            | The `TypeMap`, on which the `SimpleSelectorParser` is based.                                                                   |
 
 #### `attribute`
 
-<!-- ! descriptions -->
-
-| export             | description |
-| ------------------ | ----------- |
-| `AttributeParser`  |             |
-| `AttributeHandler` |             |
-| `attributeMap`     |             |
+| export             | description                                        |
+| ------------------ | -------------------------------------------------- |
+| `AttributeParser`  | The `BasicParser` for parsing attribute selectors. |
+| `AttributeHandler` | Handler for attribute selectors.                   |
+| `attributeMap`     | The `TypeMap`, on which `AttributeParser` is based |
 
 #### `identifier`
 
-<!-- ! descriptions -->
-
-| export             | description |
-| ------------------ | ----------- |
-| `IdentifierParser` |             |
-| `readSymbol`       |             |
-| `limitPartial`     |             |
-| `parseIdentifier`  |             |
-| `identifierMap`    |             |
+| export             | description                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `IdentifierParser` | Takes in an array of tokens, returns a `SelectorIdentifier`. Parser for `Identifiers`                            |
+| `readSymbol`       | Reads from a `Stream` for as long as its current symbol is a `SelectorSymbol`                                    |
+| `limitPartial`     | Limits a given `Stream`, and moves it, to the point where the next identifier ends. Returns the limited portion. |
+| `parseIdentifier`  | Parses the identifier (a global sub-routine utilizing the `IdentifierParser` and `limitPartial`)                 |
+| `identifierMap`    | A `TypeMap`, on which the `IdentifierParser` is based.                                                           |
 
 #### `compound`
 
-<!-- ! descriptions -->
-
-| export                   | description |
-| ------------------------ | ----------- |
-| `CompoundSelectorParser` |             |
-| `CompoundHandler`        |             |
-| `compoundMap`            |             |
+| export                   | description                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| `CompoundSelectorParser` | Main parsing function. Combines different simple selectors into `CompoundSelector`s |
+| `CompoundHandler`        | The handler for simple selectors                                                    |
+| `compoundMap`            | The `TypeMap`, on which `CompoundSelectorParser` is based                           |
 
 #### `despace`
 
-<!-- ! descriptions -->
-
-| export       | description |
-| ------------ | ----------- |
-| `DeSpacer`   |             |
-| `DeSpace`    |             |
-| `despaceMap` |             |
-| `skipSpaces` |             |
+| export       | description                                             |
+| ------------ | ------------------------------------------------------- |
+| `DeSpacer`   | Replaces sequences of `Space` tokens with a single one. |
+| `DeSpace`    | The handler of `Space`                                  |
+| `despaceMap` | The `TypeMap`, off which `DeSpacer` is based            |
+| `skipSpaces` | Skips spaces within the given `Stream`                  |
 
 #### `combinator`
 
-<!-- ! descriptions -->
-
-| export                     | description |
-| -------------------------- | ----------- |
-| `SelectorCombinatorParser` |             |
-| `HandleCombinator`         |             |
-| `HandleCompound`           |             |
-| `combinatorMap`            |             |
+| export                     | description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `SelectorCombinatorParser` | Structures compound selectors together using combinators. The main parser function of the module |
+| `HandleCombinator`         | Combinator handler.                                                                              |
+| `HandleCompound`           | Compound handler.                                                                                |
+| `combinatorMap`            | `TypeMap`, off which the `SelectorCombinatorParser` is based                                     |
 
 ### `generator`
 
 This module provides functions for generation of selectors, relating to different package's AST-belonging tokens. In particular, it includes the `generate` function as an export (aliased as `SelectorGenerator`).
 
-<!-- TODO: FINISH! [Add descriptions] -->
+The abstractions work primarily with `Stream`s , including those based off trees provided by the `tree` submodule.
 
-| export                            | description |
-| --------------------------------- | ----------- |
-| `SelectorGenerator`               |             |
-| `GenerateCombinator`              |             |
-| `GeneratePseudoClass`             |             |
-| `GenerateAttribute`               |             |
-| `GenerateCompound`                |             |
-| `GenerateElement`                 |             |
-| `GenerateId`                      |             |
-| `GenerateClass`                   |             |
-| `GeneratePseudoElement`           |             |
-| `GenerateCharacters`              |             |
-| `GenerateEscaped`                 |             |
-| `GenerateChildCombinator`         |             |
-| `GenerateDescendantCombinator`    |             |
-| `GenerateNextSiblingCombinator`   |             |
-| `GenerateNamespaceCombinator`     |             |
-| `GenerateSubseqSibilngCombinator` |             |
-| `GenerateEndsWithMatch`           |             |
-| `GenerateIncludesMatch`           |             |
-| `GenerateHyphBeginMatch`          |             |
-| `GeneratePrefixMatch`             |             |
-| `GenerateFindMatch`               |             |
-| `GenerateEqualityMatch`           |             |
-| `GenerateUniversalSelector`       |             |
-| `GenerateParentSelector`          |             |
-| `GenerateString`                  |             |
-| `GenerateSubSelector`             |             |
-| `GenerateSelectorList`            |             |
-| `GenerateIdentifier`              |             |
-| `SelectorSourceGenerator`         |             |
-| `generatorMap`                    |             |
+| export                            | description                                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| `SelectorGenerator`               | The `generate` function                                                            |
+| `GenerateCombinator`              | Generates the Combinator selector                                                  |
+| `GeneratePseudoClass`             | Generates the pseudo-class selector                                                |
+| `GenerateAttribute`               | Generates the attribute selector                                                   |
+| `GenerateCompound`                | Generates the compound selector                                                    |
+| `GenerateElement`                 | Generates the element selector                                                     |
+| `GenerateId`                      | Generates the id selector                                                          |
+| `GenerateClass`                   | Generates the class selector                                                       |
+| `GeneratePseudoElement`           | Generates the pseudo-element selector                                              |
+| `GenerateCharacters`              | Generates the characters (those are `StringCharacters` and `IdentifierCharacters`) |
+| `GenerateEscaped`                 | Generates the `Escaped`                                                            |
+| `GenerateChildCombinator`         | Generates the child combinator (`>`)                                               |
+| `GenerateDescendantCombinator`    | Generates the descendant combinator (` `)                                          |
+| `GenerateNextSiblingCombinator`   | Generates the next sibling combinator (`+`)                                        |
+| `GenerateNamespaceCombinator`     | Generates the namespace combinator (`\|`)                                          |
+| `GenerateSubseqSibilngCombinator` | Generates the subsequent sibling combinator (`~`)                                  |
+| `GenerateEndsWithMatch`           | Generates the ends-with match `$=`                                                 |
+| `GenerateIncludesMatch`           | Generates the includes match `~=`                                                  |
+| `GenerateHyphBeginMatch`          | Generates the hyphen-begin match `\|=`                                             |
+| `GeneratePrefixMatch`             | Generates the prefix match `^=`                                                    |
+| `GenerateFindMatch`               | Generates the find match `*=`                                                      |
+| `GenerateEqualityMatch`           | Generates the equality match `=`                                                   |
+| `GenerateUniversalSelector`       | Generates the universal selector `*`                                               |
+| `GenerateParentSelector`          | Generates the parent selector `&`                                                  |
+| `GenerateString`                  | Generates a string (note: preserves the quotes used - either `'`, or `"`)          |
+| `GenerateSubSelector`             | Generates a sub-selector                                                           |
+| `GenerateSelectorList`            | Generates a selector-list                                                          |
+| `GenerateIdentifier`              | Generates an identifier                                                            |
+| `SelectorSourceGenerator`         | The `SourceGenerator`, on which the `generate` function is based off               |
+| `generatorMap`                    | The `TypeMap`, on which the `SelectorSourceGenerator` is based off                 |
 
 ### `tree`
 
 Provides exports related to `TreeStream`-building based off the `parser`-created `AST`.
 
-<!-- TODO: FINISH! [write descriptions...] -->
-
-| export            | description |
-| ----------------- | ----------- |
-| `SelectorStream`  |             |
-| `SelectorTree`    |             |
-| `SimpleTree`      |             |
-| `ChildlessTree`   |             |
-| `ValueTree`       |             |
-| `AttributeTree`   |             |
-| `PseudoClassTree` |             |
-| `CombinatorTree`  |             |
-| `treeMap`         |             |
+| export            | description                                                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SelectorStream`  | A function accepting the library's AST (result of `parse`, for instance), and transforming it into a `Stream`                                                                    |
+| `SelectorTree`    | The default export of the submodule. Converts the given library's AST into a tree that can be put through `TreeStream` to make a `Stream` (on it, teh `SelectorStream` is based) |
+| `SimpleTree`      | Like others below, a function for transforming a node of an AST into a `TreeStream` argument. Converts the `.value` to the tree, and makes `[.value]` the children array         |
+| `ChildlessTree`   | The tree without children                                                                                                                                                        |
+| `ValueTree`       | The tree in which `.value` is the `.children`                                                                                                                                    |
+| `AttributeTree`   | The function that transforms an `SelectorAttribute` into a tree                                                                                                                  |
+| `PseudoClassTree` | The function that transforms a `PseudoClassSelector` into a tree                                                                                                                 |
+| `CombinatorTree`  | The function that transforms a `CombinatorToken` into a tree                                                                                                                     |
+| `treeMap`         | The `IndexMap`, on which the `SelectorTree` is based                                                                                                                             |
 
 ### `tokens`
 
