@@ -5,8 +5,18 @@
 		2.1. Completely reverse the parser (reverse every tokenizer/sub-parser). Replace the 'generator' with it...
 		2.2. Create validation API; 
 		2.3. Add a 'specificity' function for calculating specificity of a given selector
-		2.4. Create (generally) a 'Formatter' API to the 'parsers.js'. 
+		2.4. Create (generally) a 'Formatter' API to the 'parsers.js'.
 
 	Parser improvements?: 
 		2.5. Make 'identifiers' into a separate parsing layer? [the 'attribute' is very convoluted].
 		2.6. Unite the 'string-chars' and 'id-chars' into a single TokenType (there is literally NO difference in their handling anywhere inside the parser...);
+
+		[Optimization]: 
+		2.7. Update to parsers.js v0.3 [many important optimization fixes]; 
+		2.8. Stop using the 'array->InputStream->ParsingLayer->array->...' scheme of processing things; 
+			The memory for this is costly; Use the OOP-Streams from v0.3; 
+		2.9. Stop doing the 'SelectorSymbol' thing [it's overly expensive and irresponsible - the thing could possibly be VERY long...]; 
+			2.9.1. Same for the other parsers; This is especially true for parsers that operate on large inputs (example: XML); 
+				Fix those...
+
+			INSTEAD - use them as-are [when need to tokenize in parts - tokenize in parts, contextually]; 

@@ -20,7 +20,8 @@ const simpleTests = [
 
 const parsedSimple = simpleTests.map(parse)
 
-writeFile("simple.json", JSON.stringify(parsedSimple))
+console.log(parsedSimple)
+writeFile("./simple.json", JSON.stringify(parsedSimple))
 
 const complexTests = [
 	":RHUBAB      Sindarin[quan$=luni]",
@@ -31,10 +32,10 @@ const complexTests = [
 
 const parsedComplex = complexTests.map(parse)
 
-writeFile("complex.json", JSON.stringify(parsedComplex))
+writeFile("./complex.json", JSON.stringify(parsedComplex))
 
 writeFile(
-	"out.json",
+	"./out.json",
 	JSON.stringify({
 		simple: parsedSimple.map(generate),
 		complex: parsedComplex.map(generate)
